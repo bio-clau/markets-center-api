@@ -7,6 +7,11 @@ const cateogiresSchema = new Schema({
         type: String,
         required: [true, 'Name required']
     },
+    image: {
+        type: String,
+        default: 'https://cdn.icon-icons.com/icons2/2406/PNG/512/tags_categories_icon_145927.png',
+        required: false
+    }
 },
     {
         timestamps: true,
