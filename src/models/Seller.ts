@@ -35,7 +35,7 @@ const sellerSchema = new Schema({
           },
         required: [true, 'Email required']
     },
-    DNI:{
+    IdDocument:{
         type: Number,
         required: [true, 'DNI required']
     },
@@ -51,6 +51,7 @@ const sellerSchema = new Schema({
     },
     image: {
         type: String,
+        default: 'https://cdn.icon-icons.com/icons2/37/PNG/512/adduser_a%C3%B1adir_3553.png',
         required: false
     },
     adress: {
@@ -59,12 +60,9 @@ const sellerSchema = new Schema({
     },
     delivery: {
         type: Boolean,
-        default: false
+        default: false,
+        required: false
     },
-    product: {
-        type: Schema.Types.ObjectId,
-        ref: 'Product'
-    }
 },
     {
         timestamps: true,
