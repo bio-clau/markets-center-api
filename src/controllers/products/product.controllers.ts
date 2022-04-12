@@ -28,6 +28,44 @@ const productController = {
         } catch (error) {
             next(error)
         }
+    },
+
+    all: async (req: Request, res: Response, next: NextFunction) => {
+        const { name } = req.query;
+        try {
+            if (name) {
+                const productsName = await Product.find({ name: /name/i });
+                res.json({
+                    success: true,
+                    msg: "All matching products were shipped",
+                    data: productsName
+                });
+            }
+            else {
+                const allProducts = await Product.find({});
+                res.json({
+                    success: true,
+                    msg: "All products were shipped",
+                    data: allProducts
+                });
+            }
+        } catch (error) {
+            next(error);
+        }
+    },
+
+    product: async (req: Request, res: Response, next: NextFunction) => {
+        const { id } = req.params;
+        try {
+            const productId = await Product.findById(id).exec();
+            res.json({
+                success: true,
+                msg: "The product was found",
+                data: productId
+            });
+        } catch (error) {
+            next(error);
+        }
     }
 }
 
