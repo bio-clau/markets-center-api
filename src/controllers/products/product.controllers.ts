@@ -26,7 +26,7 @@ const productController = {
                 data: updateProduct
             })
         } catch (error) {
-            next(error)
+            next(error);
         }
     },
 

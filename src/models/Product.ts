@@ -4,7 +4,6 @@ const ProductSchema = new mongoose.Schema({
     name: {
         type: String,
         required: [true, "name is required"],
-        unique: [true, "name is unique"],
     },
     description: {
         type: String,
@@ -14,6 +13,11 @@ const ProductSchema = new mongoose.Schema({
         type: String,
         required: [true, "image is required"]
     },
+    category: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Categories",
+        required: [true, "category is required"]
+    }],
     stock: {
         type: Number,
         required: [true, "stock is required"]
@@ -25,7 +29,13 @@ const ProductSchema = new mongoose.Schema({
     price: {
         type: Number,
         required: [true, "price is required"]
+    },
+    sellerId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Seller"
     }
+}, {
+    timestamps: true
 });
 
 module.exports = mongoose.model('Product', ProductSchema)
