@@ -4,8 +4,8 @@ const categoriesController = require("../controllers/categories/categories.contr
 
 const router = Router();
 
-router.put('/:id', productController.update);
-router.post('/', productController.add);
-router.post('/categorie', categoriesController.add)
+router.put('/product/:id', productController.update);
+router.post('/product', productController.add);
+router.post('/category', categoriesController.add)
 
 module.exports = router;
