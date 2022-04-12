@@ -35,7 +35,7 @@ const productController = {
         const { name } = req.query;
         try {
             if (name) {
-                const productsName = await Product.find({ name: /name/i });
+                const productsName = await Product.find({ name: /name/i }).populate({ path: 'category', select: "name" });
                 if (productsName.length === 0) {
                     res.json({
                         success: true,
@@ -48,7 +48,7 @@ const productController = {
                 }
             }
             else {
-                const allProducts = await Product.find({});
+                const allProducts = await Product.find().populate({ path: 'category', select: "name" });
                 res.json({
                     success: true,
                     msg: "All products were shipped",
@@ -63,7 +63,8 @@ const productController = {
     product: async (req: Request, res: Response, next: NextFunction) => {
         const { id } = req.params;
         try {
-            const productId = await Product.findById(id).exec();
+            const productId = await Product.findById(id)
+                .populate({ path: 'category', select: "name" }).exec();
             if (Object.keys(productId).length > 0) {
                 res.json({
                     success: true,
