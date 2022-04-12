@@ -1,0 +1,6 @@
+
+### Getting all or query products(name=Productito)
+GET http://localhost:5000/api/public/product
+
+### Getting product by his id
+GET http://localhost:5000/api/public/product/:id

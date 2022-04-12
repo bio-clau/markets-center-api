@@ -1,0 +1,25 @@
+### Post a new product
+POST http://localhost:5000/api/private/
+Content-Type: application/json
+
+{
+    "name": "manzanita",
+    "description": "blablablasx2",
+    "image": "imagensita",
+    "stock": 2,
+    "discount": 0,
+    "price": 8000
+}
+
+### Update a product
+PUT http://localhost:5000/api/private/:id
+Content-Type: application/json
+
+{
+    "name": "manzanitaNueva",
+    "description": "blablablasx3",
+    "image": "imagensita",
+    "stock": 2,
+    "discount": 0,
+    "price": 8000
+}
