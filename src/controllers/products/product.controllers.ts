@@ -1,4 +1,5 @@
 import { NextFunction, Request, Response } from "express";
+const ErrorResponse = require("../../helpers/errorConstructor");
 
 const Product = require('../../models/Product');
 
@@ -35,11 +36,16 @@ const productController = {
         try {
             if (name) {
                 const productsName = await Product.find({ name: /name/i });
-                res.json({
-                    success: true,
-                    msg: "All matching products were shipped",
-                    data: productsName
-                });
+                if (productsName.length === 0) {
+                    res.json({
+                        success: true,
+                        msg: "All matching products were shipped",
+                        data: productsName
+                    });
+                }
+                else {
+                    return next(new ErrorResponse("That product isn't exist", 404));
+                }
             }
             else {
                 const allProducts = await Product.find({});
@@ -58,11 +64,16 @@ const productController = {
         const { id } = req.params;
         try {
             const productId = await Product.findById(id).exec();
-            res.json({
-                success: true,
-                msg: "The product was found",
-                data: productId
-            });
+            if(productId.length === 0) {
+                res.json({
+                    success: true,
+                    msg: "The product was found",
+                    data: productId
+                });
+            }
+            else {
+                next(new ErrorResponse("That product isn't exist", 404));
+            }
         } catch (error) {
             next(error);
         }

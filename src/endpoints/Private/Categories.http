@@ -1,5 +1,5 @@
 ### Post a new product
-POST http://localhost:5000/api/private/categorie
+POST http://localhost:5000/api/private/category
 Content-Type: application/json
 
 {
