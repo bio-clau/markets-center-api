@@ -3,4 +3,4 @@
 GET http://localhost:5000/api/public/product
 
 ### Getting product by his id
-GET http://localhost:5000/api/public//product/6254d5893905e29a56b6fcf8
+GET http://localhost:5000/api/public/product/:id
