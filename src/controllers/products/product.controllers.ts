@@ -64,10 +64,10 @@ const productController = {
         const { id } = req.params;
         try {
             const productId = await Product.findById(id).exec();
-            if(productId.length === 0) {
+            if (Object.keys(productId).length > 0) {
                 res.json({
                     success: true,
-                    msg: "The product was found",
+                    msg: "The product were found",
                     data: productId
                 });
             }
@@ -76,6 +76,26 @@ const productController = {
             }
         } catch (error) {
             next(error);
+        }
+    },
+
+    deleteProduct: async (req: Request, res: Response, next: NextFunction) => {
+        const { id } = req.params;
+        try {
+            const productDeleted = await Product.findByIdAndDelete(id);
+            if (Object.keys(productDeleted).length > 0) {
+                res.json({
+                    success: true,
+                    msg: "The product were deleted succesfully",
+                    data: []
+                });
+            }
+            else {
+                next(new ErrorResponse("That product isn't exist", 404));
+            }
+
+        } catch (error) {
+            next(error)
         }
     }
 }
