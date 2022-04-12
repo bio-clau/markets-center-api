@@ -1,0 +1,7 @@
+### Post a new product
+POST http://localhost:5000/api/private/categorie
+Content-Type: application/json
+
+{
+    "name": "Lacteos"
+}
