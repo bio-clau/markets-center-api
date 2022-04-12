@@ -27,9 +27,6 @@ const categoriesController =  {
         } catch (error) {
             next(error);
         }
-    },
-
-    categorie: async(req: Request, res: Response, next: NextFunction) => {
     }
 }
 
