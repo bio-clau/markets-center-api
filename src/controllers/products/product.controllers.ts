@@ -4,54 +4,68 @@ const ErrorResponse = require("../../helpers/errorConstructor");
 const Product = require('../../models/Product');
 
 const productController = {
+    //@route POST /api/private/product
+    //access private
     add: async (req: Request, res: Response, next: NextFunction) => {
         const newProduct = new Product(req.body);
         try {
-            const savedProduct = await newProduct.save();
-            res.status(201).json({
-                success: true,
-                msg: "Producto agregado correctamente",
-                data: savedProduct
+            newProduct.save((err: Object, product: Object) => {
+                if (err) return next(new ErrorResponse("Complete todos los campos", 400));
+                if (product) {
+                    res.status(201).json({
+                        success: true,
+                        msg: "Producto agregado correctamente",
+                        data: product
+                    });
+                }
             });
         } catch (error) {
             next(error)
         }
     },
 
+    //@route PUT /api/private/product/id
+    //access private
     update: async (req: Request, res: Response, next: NextFunction) => {
         try {
-            const updateProduct = await Product.findByIdAndUpdate(req.params.id, { $set: req.body }, { new: true });
-            res.json({
-                success: true,
-                msg: "Producto actualizado correctamente",
-                data: updateProduct
-            })
+            Product.updateOne(req.params.id, { $set: req.body }, { new: true, runValidators: true }, (err: Object, product: Object) => {
+                if (err) return next(new ErrorResponse("Id not found", 404))
+                if (product) {
+                    res.json({
+                        success: true,
+                        msg: "Producto actualizado correctamente",
+                        data: product
+                    });
+                }
+            });
         } catch (error) {
             next(error);
         }
     },
-
+    //@route GET /api/public/products
+    //access public
     all: async (req: Request, res: Response, next: NextFunction) => {
         const { name } = req.query;
+        console.log(name);
+
         try {
             if (name) {
-                const productsName = await Product.find({ name: /name/i }).populate({ path: 'category', select: "name" });
-                if (Object.keys(productsName).length > 0) {
-                    res.json({
-                        success: true,
-                        msg: "All matching products were shipped",
-                        data: productsName
-                    });
-                }
-                else {
-                    return next(new ErrorResponse("That product isn't exist", 404));
-                }
+                Product.find({ name: { $regex: `.*${name}`, $options: "i" } }, (err: Object, product: Object) => {
+                    if (err) return next(new ErrorResponse("El producto no existe", 404));
+                    else {
+                        res.json({
+                            success: true,
+                            msg: "Todos los productos coincidentes fueron enviados",
+                            data: product
+                        });
+                    }
+                }).populate({ path: 'category', select: "name" });
             }
             else {
                 const allProducts = await Product.find().populate({ path: 'category', select: "name" });
                 res.json({
                     success: true,
-                    msg: "All products were shipped",
+                    msg: "Todos los productos fueron enviados",
                     data: allProducts
                 });
             }
@@ -60,41 +74,40 @@ const productController = {
         }
     },
 
+    //@route GET /api/public/product/:id
+    //access public
     product: async (req: Request, res: Response, next: NextFunction) => {
         const { id } = req.params;
         try {
-            const productId = await Product.findById(id)
-                .populate({ path: 'category', select: "name" }).exec();
-            if (Object.keys(productId).length > 0) {
-                res.json({
-                    success: true,
-                    msg: "The product were found",
-                    data: productId
-                });
-            }
-            else {
-                next(new ErrorResponse("That product isn't exist", 404));
-            }
+            Product.findById(id).populate({ path: 'category', select: "name" }).exec((err: Object, productId: Object) => {
+                if (err) next(new ErrorResponse("El producto no existe", 404));
+                else {
+                    res.json({
+                        success: true,
+                        msg: "El producto fue encontrado",
+                        data: productId
+                    });
+                }
+            });
         } catch (error) {
             next(error);
         }
     },
-
+    //@route DELETE /api/private/product/:id
+    //access private
     deleteProduct: async (req: Request, res: Response, next: NextFunction) => {
         const { id } = req.params;
         try {
-            const productDeleted = await Product.findByIdAndDelete(id);
-            if (Object.keys(productDeleted).length > 0) {
-                res.json({
-                    success: true,
-                    msg: "The product were deleted succesfully",
-                    data: []
-                });
-            }
-            else {
-                next(new ErrorResponse("That product isn't exist", 404));
-            }
-
+            Product.findByIdAndDelete(id, (err: Object, productDeleted: Object) => {
+                if (err) next(new ErrorResponse("El producto no existe", 404));
+                else {
+                    res.json({
+                        success: true,
+                        msg: "El producto fue eliminado con éxito",
+                        data: []
+                    });
+                }
+            });
         } catch (error) {
             next(error)
         }
