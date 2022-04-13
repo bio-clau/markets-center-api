@@ -36,7 +36,7 @@ const productController = {
         try {
             if (name) {
                 const productsName = await Product.find({ name: /name/i }).populate({ path: 'category', select: "name" });
-                if (productsName.length === 0) {
+                if (Object.keys(productsName).length > 0) {
                     res.json({
                         success: true,
                         msg: "All matching products were shipped",
