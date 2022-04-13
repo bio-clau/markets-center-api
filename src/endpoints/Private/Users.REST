@@ -1,0 +1,10 @@
+###
+POST http://localhost:5000/api/private/users/add
+Content-Type: application/json
+
+{
+    "name": "Claudia Neme",
+    "picture": "fotito",
+    "user_id": "ieo0w5utv89w4uyt",
+    "email": "test@test.com"
+}

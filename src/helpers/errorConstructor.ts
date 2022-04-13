@@ -5,8 +5,10 @@
 
 class ErrorResponse extends Error {
     statusCode:number;
+    message:string;
     constructor(message:string, statusCode:number) {
-        super(message);
+        super()
+        this.message= message;
         this.statusCode = statusCode;
     }
 }

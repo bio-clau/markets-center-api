@@ -14,9 +14,10 @@ const errorHandler = (err:any, req:Request, res: Response, next:NextFunction) =>
     }
 
     //Si el mensaje o el status no se envia, entonces es Server Error y statusCode 500
+    console.log('error:', error)
     res.status(error.statusCode || 500).json({
         success:false,
-        msg: error.message || "Server Error"
+        msg: error.message || "Server Erroraaa"
     });
 }
 
