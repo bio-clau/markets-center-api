@@ -7,8 +7,14 @@ const router = Router();
 
 router.put('/product/:id', productController.update);
 router.post('/product', productController.add);
-router.post('/category', categoriesController.add)
-router.post('/users/add', userController.add)
+
+
+router.post('/category', categoriesController.add);
+
+router.get('/users', userController.getAll)
+router.post('/users/add', userController.add);
+router.put('/users/update', userController.update);
+
 
 
 module.exports = router;
