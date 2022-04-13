@@ -41,6 +41,24 @@ const adminController = {
         } catch (err) {
             next(err)
         }
+    },
+    
+    addCategorie: async (req: Request, res: Response, next: NextFunction) => {
+        const newCategorie = new Categories(req.body);
+        try {
+            await newCategorie.save((error: Object, categorie: Object) => {
+                if (error) return next(new ErrorResponse("All parameters are required", 404));
+                if (categorie) {
+                    res.json({
+                        success: true,
+                        msg: "Categorie successfully created",
+                        data: categorie
+                    });
+                }
+            });
+        } catch (error) {
+            next(error);
+        }
     }
 }
 
