@@ -105,6 +105,22 @@ const userController = {
       } catch (err) {
           next(err)
       }
+  },
+
+  sellers: async (req: Request, res: Response, next:NextFunction)=> {
+      try {
+          const sellers = await User.find({isSeller: true});
+          if(!sellers.length){
+              return next(new ErrorResponse('No se encontrarosn vendedores', 404))
+          }
+          res.status(200).json({
+              success: true,
+              msg:"Vendedores encontrados",
+              data: sellers
+          })
+      } catch (err) {
+          next(err)
+      }
   }
 };
 

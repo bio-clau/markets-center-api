@@ -11,7 +11,8 @@ router.post('/product', productController.add);
 
 router.post('/category', categoriesController.add);
 
-router.get('/users', userController.getAll)
+router.get('/users', userController.getAll);
+router.get('/users/sellers', userController.sellers);
 router.post('/users/add', userController.add);
 router.put('/users/update', userController.update);
 
