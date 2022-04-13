@@ -1,5 +1,4 @@
 import { Schema, model } from "mongoose";
-const bcrypt = require("bcryptjs");
 
 const UserSchema = new Schema({
     isAdmin:{
@@ -27,13 +26,8 @@ const UserSchema = new Schema({
         unique:true,
         required: true
     },
-    password: {
-        type: String,
-        select: false,
-    },
     phone: {
         type: Number,
-        required: [true, 'El numero de teléfono es requerido.']
     },
     email: {
         type: String,
@@ -42,7 +36,6 @@ const UserSchema = new Schema({
     },
     IdDocument:{
         type: Number,
-        required: [true, 'DNI required']
     },
     dateOfBirth: {
         type: Date,
@@ -61,7 +54,6 @@ const UserSchema = new Schema({
     },
     adress: {
         type: String,
-        required: [true, 'Adress required']
     },
     delivery: {
         type: Boolean,
@@ -69,13 +61,5 @@ const UserSchema = new Schema({
         required: false
     }
 })
-UserSchema.pre("save", async function (next) {
-    if (!this.isModified("password")) {
-      next();
-    }
-    const salt = await bcrypt.genSalt(10);
-    this.password = await bcrypt.hash(this.password, salt);
-    next();
-  });
-
-export default model('User', UserSchema)
+const User = model("User", UserSchema);
+module.exports = User;
