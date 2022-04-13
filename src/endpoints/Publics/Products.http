@@ -6,4 +6,4 @@ GET http://localhost:5000/api/public/products
 GET http://localhost:5000/api/public/product/6254d5893905e29a56b6fcf8
 
 ### Delete a product by his id
-DELETE http://localhost:5000/api/public/product/6254d5893905e29a56b6fcf8
+DELETE http://localhost:5000/api/public/product/6255d9c3a2e6d5a6702ac756

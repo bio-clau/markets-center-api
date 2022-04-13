@@ -1,10 +1,19 @@
 ###
+GET http://localhost:5000/api/private/users
+
+###
 POST http://localhost:5000/api/private/users/add
 Content-Type: application/json
 
 {
     "name": "Claudia Neme",
     "picture": "fotito",
-    "user_id": "ieo0w5utv89w4uyt",
-    "email": "test@test.com"
+    "user_id": "ieo0w5utv89w4uyt1",
+    "email": "test2@test.com",
+    "isSeller": false,
+    "phone": 1234567890,
+    "IdDocument": 12345678,
+    "dateofBirth": "25/10/87",
+    "address": "cualquier casa",
+    "isAdmin": false
 }
