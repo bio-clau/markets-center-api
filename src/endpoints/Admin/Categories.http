@@ -3,5 +3,5 @@ POST http://localhost:5000/api/admin/category
 Content-Type: application/json
 
 {
-    "name": "Lacteos"
+    "name": "Frutitas"
 }

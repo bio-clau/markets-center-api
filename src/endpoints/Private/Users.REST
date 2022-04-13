@@ -6,14 +6,14 @@ POST http://localhost:5000/api/private/users/add
 Content-Type: application/json
 
 {
-    "name": "Foca Loca",
+    "name": "Gena",
     "picture": "fotito",
-    "user_id": "ieo0w5utv89w4uyt454",
-    "email": "maxitodo@test.com",
+    "user_id": "ieo0w5utv89w4uyt454rwer",
+    "email": "genaro@test.com",
     "isSeller": true,
-    "phone": 1234567890,
-    "IdDocument": 12345678,
-    "dateofBirth": "25/10/87",
+    "phone": 1234567840,
+    "IdDocument": 12345578,
+    "dateofBirth": "24/10/87",
     "address": "cualquier casa",
     "isAdmin": false
 }

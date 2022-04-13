@@ -1,12 +1,22 @@
 import { Schema, model } from "mongoose";
 
+// interface IOrder {
+//     userId: Schema.Types.ObjectId;
+//     products:[];
+//     amount:number;
+//     address:string;
+//     status:string;
+// }
 const orderSchema = new Schema({
-    buyer: {
+    userId: {
         type: Schema.Types.ObjectId,
-        ref: 'Buyer'
+        ref: 'User'
     },
     products: [{
-        productId: String,
+        productId: {
+            type: Schema.Types.ObjectId,
+            ref: 'Product'
+        },
         quantity: {
             type: Number,
             default: 1
@@ -17,7 +27,7 @@ const orderSchema = new Schema({
         required: true
     },
     address: {
-        type: Object
+        type: String
     },
     status: {
         type: String,
@@ -26,4 +36,4 @@ const orderSchema = new Schema({
 },
 {timestamps: true});
 
-export default model('Order', orderSchema);
+module.exports = model('Order', orderSchema);
