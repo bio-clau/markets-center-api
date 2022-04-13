@@ -30,7 +30,6 @@ app.use('/api/private', require('./routes/private.routes'));
 app.use('/api/public', require('./routes/public.routes'));
 app.use('/api/admin', require('./routes/admin.routes'));
 
-
 //ErrorHandler debe estar despues de todas las rutas
 app.use(errorHandler);
 
