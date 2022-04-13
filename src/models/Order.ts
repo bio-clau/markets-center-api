@@ -1,20 +1,39 @@
 import { Schema, model } from "mongoose";
 
+// interface IOrder {
+//     userId: Schema.Types.ObjectId;
+//     products:[];
+//     amount:number;
+//     address:string;
+//     status:string;
+// }
 const orderSchema = new Schema({
-    buyer: {
+    userId: {
         type: Schema.Types.ObjectId,
-        ref: 'Buyer'
+        ref: 'User'
     },
     products: [{
-        productId: String,
+        productId: {
+            type: Schema.Types.ObjectId,
+            ref: 'Product'
+        },
         quantity: {
             type: Number,
             default: 1
         }
     }],
-    mount: {
-        type: Number
+    amount: {
+        type: Number,
+        required: true
+    },
+    address: {
+        type: String
+    },
+    status: {
+        type: String,
+        default: 'pending'
     }
-});
+},
+{timestamps: true});
 
-export default model('Order', orderSchema);
+module.exports = model('Order', orderSchema);

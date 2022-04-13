@@ -1,6 +1,20 @@
 import { Schema, model } from "mongoose";
 
-const UserSchema = new Schema({
+interface IUser {
+    isAdmin: boolean;
+    isSeller:boolean;
+    name: string;
+    userId: string;
+    phone: number;
+    email: any;
+    IdDocument: number;
+    dateOfBirth: any;
+    image: string;
+    address: string;
+    delivery: boolean;
+}
+
+const UserSchema = new Schema<IUser>({
     isAdmin:{
         type: Boolean,
         default: false

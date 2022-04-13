@@ -1,6 +1,17 @@
 import mongoose from "mongoose";
 
-const ProductSchema = new mongoose.Schema({
+interface IProduct {
+    name: string;
+    description: string;
+    image: string;
+    category: [];
+    stock: number;
+    discount: number;
+    price: number;
+    userId: mongoose.Schema.Types.ObjectId;
+}
+
+const ProductSchema = new mongoose.Schema<IProduct>({
     name: {
         type: String,
         required: [true, "name is required"],
@@ -28,7 +39,7 @@ const ProductSchema = new mongoose.Schema({
     },
     userId: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "Users"
+        ref: "User"
     }
 }, {
     timestamps: true

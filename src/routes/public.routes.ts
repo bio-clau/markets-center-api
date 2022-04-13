@@ -7,6 +7,6 @@ const router = Router();
 router.get('/products', all);
 router.get('/product/:id', product);
 router.get('/categories', allCategories);
-router.delete('/product/:id', deleteProduct)
+router.delete('/product/:id', deleteProduct);
 
 module.exports = router;
