@@ -30,9 +30,9 @@ const ProductSchema = new mongoose.Schema({
         type: Number,
         required: [true, "price is required"]
     },
-    sellerId: {
+    userId: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "Seller"
+        ref: "Users"
     }
 }, {
     timestamps: true

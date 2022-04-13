@@ -3,7 +3,6 @@ import { Schema, model } from "mongoose";
 const UserSchema = new Schema({
     isAdmin:{
         type: Boolean,
-        required:true,
         default: false
     },
     isSeller:{
@@ -52,7 +51,7 @@ const UserSchema = new Schema({
         default: 'https://cdn.icon-icons.com/icons2/37/PNG/512/adduser_a%C3%B1adir_3553.png',
         required: false
     },
-    adress: {
+    address: {
         type: String,
     },
     delivery: {

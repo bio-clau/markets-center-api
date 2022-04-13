@@ -1,0 +1,12 @@
+### delete una categoria
+DELETE http://localhost:5000/api/admin/categories/6255aaf3fb00ca617cda4c95
+
+
+### update una categoria
+PUT http://localhost:5000/api/admin/categories/6255a29a351a9ea80e5af836
+Content-Type: application/json
+
+{
+    "name": "Verduras2",
+    "image": "https://cdn.icon-icons.com/icons2/2406/PNG/512/tags_categories_icon_145927.png"
+}

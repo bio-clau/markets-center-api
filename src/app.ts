@@ -28,7 +28,7 @@ app.use(express.urlencoded({ extended: true, limit: '50mb' }));
 //use routes
 app.use('/api/private', require('./routes/private.routes'));
 app.use('/api/public', require('./routes/public.routes'));
-// app.use('/api/admin', require('./routes/admin.routes'));
+app.use('/api/admin', require('./routes/admin.routes'));
 
 //ErrorHandler debe estar despues de todas las rutas
 app.use(errorHandler);
@@ -40,7 +40,7 @@ const server = app.listen(app.get('port'), () => {
 
 
 //unhandledRejecton prettier :P
-process.on('inhandledRejection', (err, promise) => {
+process.on('unhandledRejection', (err, promise) => {
     console.log(`Logged error: ${err}`);
     server.close(() => {
         process.exit(1);
