@@ -12,9 +12,18 @@ const orderSchema = new Schema({
             default: 1
         }
     }],
-    mount: {
-        type: Number
+    amount: {
+        type: Number,
+        required: true
+    },
+    address: {
+        type: Object
+    },
+    status: {
+        type: String,
+        default: 'pending'
     }
-});
+},
+{timestamps: true});
 
 export default model('Order', orderSchema);
