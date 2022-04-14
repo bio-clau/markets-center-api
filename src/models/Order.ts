@@ -1,21 +1,23 @@
 import { Schema, model } from "mongoose";
 
-// interface IOrder {
-//     userId: Schema.Types.ObjectId;
-//     products:[];
-//     amount:number;
-//     address:string;
-//     status:string;
-// }
-const orderSchema = new Schema({
+interface IOrder {
+    userId: Schema.Types.ObjectId;
+    products:[];
+    amount:number;
+    address:string;
+    status:string;
+}
+const orderSchema = new Schema<IOrder>({
     userId: {
         type: Schema.Types.ObjectId,
-        ref: 'User'
+        ref: 'User',
+        required: [true, 'El user es requerido.']
     },
     products: [{
         productId: {
             type: Schema.Types.ObjectId,
-            ref: 'Product'
+            ref: 'Product',
+            required: [true, 'Almenos un producto es requerido.']
         },
         quantity: {
             type: Number,
@@ -24,10 +26,10 @@ const orderSchema = new Schema({
     }],
     amount: {
         type: Number,
-        required: true
+        required: [true, 'El monto es requerido.']
     },
     address: {
-        type: String
+        type: String,
     },
     status: {
         type: String,
