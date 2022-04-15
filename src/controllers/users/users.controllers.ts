@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 const ErrorResponse = require("../../helpers/errorConstructor");
 
-const User = require("../../models/Users");
+const User = require("../../models/User");
 
 const userController = {
   add: async (req: Request, res: Response, next: NextFunction) => {
