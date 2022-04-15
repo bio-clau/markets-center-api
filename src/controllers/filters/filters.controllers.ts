@@ -44,7 +44,7 @@ const filtersControllers = {
                             data: product
                         });
                     }
-                });
+                }).populate({ path: 'category', select: "name" });;
             }
         } catch (error) {
             next(error)
