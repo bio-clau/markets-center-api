@@ -8,12 +8,13 @@ Content-Type: application/json
     "image": "imagensensita",
     "stock": 3,
     "discount": 0,
+    "category": ["6255aa9a351a9ea80e5af836","6255d99ba2e6d5a6702ac752"],
     "price": 8000,
     "userId": "62573b9bf94ccd0d5b502f1f"
 }
 
 ### Update a product
-PUT http://localhost:5000/api/private/:id
+PUT http://localhost:5000/api/private/product/:id
 Content-Type: application/json
 
 {

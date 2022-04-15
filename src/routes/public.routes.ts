@@ -1,5 +1,5 @@
 import { Router } from "express";
-const { filterBySeller } = require('../controllers/filters/filters.controllers')
+const { filterBySeller, filterByCategories } = require('../controllers/filters/filters.controllers')
 const {all, product, deleteProduct} = require('../controllers/products/product.controllers');
 const {allCategories } = require('../controllers/categories/categories.controllers');
 const router = Router();
@@ -9,5 +9,6 @@ router.get('/product/:id', product);
 router.get('/categories', allCategories);
 router.delete('/product/:id', deleteProduct);
 router.get('/filter/bySeller/:id', filterBySeller);
+router.get('/filter/byCategory', filterByCategories);
 
 module.exports = router;
