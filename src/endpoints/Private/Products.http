@@ -3,7 +3,7 @@ POST http://localhost:5000/api/private/product
 Content-Type: application/json
 
 {
-    "name": "Sandia",
+    "name": "Sandiaas",
     "description": "blablablasx5",
     "image": "imagensensita",
     "stock": 3,

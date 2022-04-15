@@ -4,8 +4,7 @@ Content-Type: application/json
 {
     "userId": "6256d1c7b4ceca231cfff253",
     "products":[
-        {"productId":"6254d933d512370c92409340", "quantity": 5},
-        {"productId":"6255aa9a351a9ea80e5af836", "quantity": 5}],
+        {"productId":"62575f33a6bd19c1ebbda5eb", "quantity": 5}],
     "amount": 54,
     "address":"fasfafdfasf",
     "status":"exito"

@@ -28,7 +28,7 @@ const productController = {
     //access private
     update: async (req: Request, res: Response, next: NextFunction) => {
         try {
-            Product.updateOne(req.params.id, { $set: req.body }, { new: true, runValidators: true }, (err: Object, product: Object) => {
+            Product.findByIdAndUpdate(req.params.id, { $set: req.body }, { new: true, runValidators: true }, (err: Object, product: Object) => {
                 if (err) return next(new ErrorResponse("Id not found", 404))
                 if (product) {
                     res.json({
