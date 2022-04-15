@@ -3,7 +3,7 @@ const ErrorResponse = require("../../helpers/errorConstructor");
 const Order = require('../../models/Order')
 
 const orderControllers = {
-    addOrder: (res: Response, req: Request, next: NextFunction) => {
+    addOrder: (req: Request, res: Response, next: NextFunction) => {
         const newOrder = new Order(req.body);
         try {
             newOrder.save((error: Object, order: Object) => {
@@ -21,7 +21,7 @@ const orderControllers = {
             next(error)
         }
     },
-    sendOrder: async(res: Response, req: Request, next: NextFunction) => {
+    sendOrder: async(req: Request, res: Response, next: NextFunction) => {
         const {id} = req.params
         try {
             const orderId = await Order.findById(id).populate({path: 'user', select: 'name'}).exec();

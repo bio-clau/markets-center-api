@@ -9,6 +9,7 @@ const router = Router();
 
 router.put('/product/:id', productController.update);
 router.post('/product', productController.add);
+
 router.post('/addOrder', addOrder);
 router.get('/sendOrder/:id', sendOrder)
 
