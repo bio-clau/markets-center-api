@@ -43,10 +43,10 @@ const adminController = {
         }
     },
     
-    addCategorie: async (req: Request, res: Response, next: NextFunction) => {
-        const newCategorie = new Categories(req.body);
+    addCategories: async (req: Request, res: Response, next: NextFunction) => {
+        const newCategories = new Categories(req.body);
         try {
-            await newCategorie.save((error: Object, categorie: Object) => {
+            await newCategories.save((error: Object, categorie: Object) => {
                 if (error) return next(new ErrorResponse("All parameters are required", 404));
                 if (categorie) {
                     res.json({
