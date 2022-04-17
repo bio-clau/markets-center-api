@@ -1,5 +1,5 @@
 ### Post a new product
-POST http://localhost:5000/api/private/product
+POST http://localhost:4000/api/private/product
 Content-Type: application/json
 
 {
@@ -14,7 +14,7 @@ Content-Type: application/json
 }
 
 ### Update a product
-PUT http://localhost:5000/api/private/product/:id
+PUT http://localhost:4000/api/private/product/:id
 Content-Type: application/json
 
 {
