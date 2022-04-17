@@ -1,5 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 const ErrorResponse = require("../../helpers/errorConstructor");
+const {cloudinary} = require('../../config/cloudinary')
 
 const User = require("../../models/User");
 
@@ -7,8 +8,9 @@ const userController = {
   add: async (req: Request, res: Response, next: NextFunction) => {
     const {
       name,
-      picture,
-      user_id,
+      image,
+      uploadImg,
+      userId,
       email,
       isSeller,
       phone,
@@ -17,16 +19,26 @@ const userController = {
       address,
       delivery,
     } = req.body;
+    let img='';
     try {
       if (await User.findOne({ email: email })) {
         return next(
           new ErrorResponse("El mail ya se encuentra registrado", 401)
         );
       }
+      if(uploadImg){
+        const result = await cloudinary.uploader.upload(image);
+        if (!result) {
+          return res.status(503).json('Upload failed');
+        }
+        img=result.url
+      } else {
+        img=image
+      }
       const user = new User({
         name,
-        image: picture,
-        userId: user_id,
+        image: img,
+        userId,
         email,
         isSeller,
         phone,
