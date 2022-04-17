@@ -1,8 +1,8 @@
 ### Get todos los usuarios
-GET http://localhost:5000/api/private/users
+GET http://localhost:4000/api/private/users
 
 ### post un usuario nuevo
-POST http://localhost:5000/api/private/users/add
+POST http://localhost:4000/api/private/users/add
 Content-Type: application/json
 
 {
@@ -19,7 +19,7 @@ Content-Type: application/json
 }
 
 ### actualiza un usuario
-PUT http://localhost:5000/api/private/users/update
+PUT http://localhost:4000/api/private/users/update
 Content-Type: application/json
 
 {
@@ -36,4 +36,4 @@ Content-Type: application/json
 }
 
 ### get de todos los vendedores
-GET http://localhost:5000/api/private/users/sellers
+GET http://localhost:4000/api/private/users/sellers
