@@ -28,7 +28,7 @@ const productController = {
     //access private
     update: async (req: Request, res: Response, next: NextFunction) => {
         try {
-            Product.updateOne(req.params.id, { $set: req.body }, { new: true, runValidators: true }, (err: Object, product: Object) => {
+            Product.findByIdAndUpdate(req.params.id, { $set: req.body }, { new: true, runValidators: true }, (err: Object, product: Object) => {
                 if (err) return next(new ErrorResponse("Id not found", 404))
                 if (product) {
                     res.json({
@@ -46,8 +46,6 @@ const productController = {
     //access public
     all: async (req: Request, res: Response, next: NextFunction) => {
         const { name } = req.query;
-        console.log(name);
-
         try {
             if (name) {
                 Product.find({ name: { $regex: `.*${name}`, $options: "i" } }, (err: Object, product: Object) => {
