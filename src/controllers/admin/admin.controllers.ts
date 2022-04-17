@@ -3,6 +3,7 @@ const ErrorResponse = require("../../helpers/errorConstructor");
 
 const Categories = require('../../models/Categories.ts');
 
+//todo eliminar usuarios
 const adminController = {
     delCategory: async (req: Request, res: Response, next:NextFunction)=> {
         const idCategory = req.params.id;
