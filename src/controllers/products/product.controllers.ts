@@ -11,6 +11,8 @@ const productController = {
     add: async (req: Request, res: Response, next: NextFunction) => {
         const { name, description, image, stock, category, price, userId } = req.body;
         let img = '';
+        const user = await User.find({ userId: userId });
+        let userID = `${user[0]._id}`
         if (image.length > 0) {
             const result = await cloudinary.uploader.upload(image);
             if (!result) {
@@ -18,6 +20,7 @@ const productController = {
             }
             img = result.url
         }
+        
         const newProduct = new Product({
             name,
             description,
@@ -25,7 +28,7 @@ const productController = {
             stock,
             category,
             price,
-            userId
+            userId: userID
         });
         try {
             newProduct.save((err: Object, product: Object) => {
