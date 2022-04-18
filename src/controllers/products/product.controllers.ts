@@ -1,5 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 const ErrorResponse = require("../../helpers/errorConstructor");
+const { cloudinary } = require('../../config/cloudinary');
+const User = require('../../models/User');
 
 const Product = require('../../models/Product');
 
@@ -7,7 +9,27 @@ const productController = {
     //@route POST /api/private/product
     //access private
     add: async (req: Request, res: Response, next: NextFunction) => {
-        const newProduct = new Product(req.body);
+        const { name, description, image, stock, category, price, userId } = req.body;
+        let img = '';
+        const user = await User.find({ userId: userId });
+        let userID = `${user[0]._id}`
+        if (image.length > 0) {
+            const result = await cloudinary.uploader.upload(image);
+            if (!result) {
+                return res.status(503).json('Upload failed');
+            }
+            img = result.url
+        }
+        
+        const newProduct = new Product({
+            name,
+            description,
+            image: img,
+            stock,
+            category,
+            price,
+            userId: userID
+        });
         try {
             newProduct.save((err: Object, product: Object) => {
                 if (err) return next(new ErrorResponse("Complete todos los campos", 400));
