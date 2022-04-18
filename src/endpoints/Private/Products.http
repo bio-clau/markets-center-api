@@ -3,14 +3,13 @@ POST http://localhost:4000/api/private/product
 Content-Type: application/json
 
 {
-    "name": "Sandiaas",
+    "name": "San Valentin",
     "description": "blablablasx5",
-    "image": "imagensensita",
+    "image": "",
     "stock": 3,
-    "discount": 0,
     "category": ["6255aa9a351a9ea80e5af836","6255d99ba2e6d5a6702ac752"],
     "price": 8000,
-    "userId": "62573b9bf94ccd0d5b502f1f"
+    "userId": "6256d1c7b4ceca231cfff253"
 }
 
 ### Update a product
@@ -22,6 +21,5 @@ Content-Type: application/json
     "description": "blablablasx3",
     "image": "imagensita",
     "stock": 2,
-    "discount": 0,
     "price": 8000
 }
