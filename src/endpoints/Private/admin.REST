@@ -2,6 +2,7 @@
 DELETE http://localhost:4000/api/admin/categories/6255aaf3fb00ca617cda4c95
 
 
+
 ### update una categoria
 PUT http://localhost:4000/api/admin/categories/6255a29a351a9ea80e5af836
 Content-Type: application/json
