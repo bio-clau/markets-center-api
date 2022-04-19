@@ -1,4 +1,5 @@
 import { NextFunction, Request, Response } from "express";
+import { isNewExpression } from "typescript";
 const ErrorResponse = require("../../helpers/errorConstructor");
 const {cloudinary} = require('../../config/cloudinary')
 
@@ -159,15 +160,19 @@ const userController = {
   },
   byId: async (req: Request, res: Response, next: NextFunction)=>{
     const {id} = req.params;
-    const user = await User.find({userId: id})
-    if(!user) {
-      return next(new ErrorResponse("No se encontro usuario", 404))
-    };
-    res.status(200).json({
-      success: true,
-      msg:"Usuario encontrado",
-      data: user
-    })
+    try {
+      const user = await User.find({userId: id})
+      if(!user) {
+        return next(new ErrorResponse("No se encontro usuario", 404))
+      };
+      res.status(200).json({
+        success: true,
+        msg:"Usuario encontrado",
+        data: user
+      })
+    } catch (err) {
+      next(err)
+    }
   }
 };
 

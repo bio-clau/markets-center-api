@@ -2,8 +2,8 @@ import { NextFunction, Request, Response } from "express";
 const ErrorResponse = require("../../helpers/errorConstructor");
 
 const Categories = require('../../models/Categories.ts');
+const User = require('../../models/User');
 
-//todo eliminar usuarios
 const adminController = {
     delCategory: async (req: Request, res: Response, next:NextFunction)=> {
         const idCategory = req.params.id;
@@ -60,6 +60,22 @@ const adminController = {
         } catch (error) {
             next(error);
         }
+    },
+    deleteUser: async (req: Request, res: Response, next: NextFunction)=>{
+        const {id} = req.params;
+      try {
+        const user = await User.findOne({userId: id});
+        if(!user){
+            return next(new ErrorResponse("No se pudo eliminar el usuario", 400))
+        }
+        await User.findByIdAndDelete(user._id)
+        res.status(200).json({
+            success: true,
+            msg: "Usuario eliminado correctamente"
+        })
+      } catch (err) {
+          next(err)
+      }
     }
 }
 
