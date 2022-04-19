@@ -6,7 +6,6 @@ interface IProduct {
     image: string;
     category: [];
     stock: number;
-    discount: number;
     price: number;
     userId: mongoose.Schema.Types.ObjectId;
 }

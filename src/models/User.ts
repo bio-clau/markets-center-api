@@ -62,7 +62,7 @@ const UserSchema = new Schema<IUser>({
     },
     image: {
         type: String,
-        default: 'https://cdn.icon-icons.com/icons2/37/PNG/512/adduser_a%C3%B1adir_3553.png',
+        default: 'https://w7.pngwing.com/pngs/178/595/png-transparent-user-profile-computer-icons-login-user-avatars-thumbnail.png',
         required: false
     },
     address: {
