@@ -16,7 +16,10 @@ router.get('/sendOrder/:id', sendOrder)
 //users
 router.post('/users/add', userController.add);
 router.get('/users', userController.getAll);
+router.get('/users/byid/:id', userController.byId);
 router.get('/users/sellers', userController.sellers);
+router.get('/users/history', userController.getHistory);
 router.put('/users/update', userController.update);
+
 
 module.exports = router;

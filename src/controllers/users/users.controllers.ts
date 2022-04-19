@@ -3,6 +3,7 @@ const ErrorResponse = require("../../helpers/errorConstructor");
 const {cloudinary} = require('../../config/cloudinary')
 
 const User = require("../../models/User");
+const Order = require("../../models/Order")
 
 const userController = {
   add: async (req: Request, res: Response, next: NextFunction) => {
@@ -118,6 +119,28 @@ const userController = {
           next(err)
       }
   },
+  getHistory: async (req:Request, res: Response, next:NextFunction)=>{
+    const {id} = req.params;
+    try {
+      if(!id) {
+        return next(new ErrorResponse("El ID no es válido", 400));
+      }
+      if(!await User.findById(id)){
+        return next(new ErrorResponse("El ID no es válido", 400))
+      }
+      const orders = await Order.find({userId:id}).populate()
+      if(!orders.length){
+        return next(new ErrorResponse("El historial esta vacío", 404))
+      }
+      res.status(200).json({
+        success:true,
+        msg:"Historial encontrado",
+        data: orders
+      })
+    } catch (err) {
+      next(err)
+    }
+  },
 
   sellers: async (req: Request, res: Response, next:NextFunction)=> {
       try {
@@ -133,6 +156,18 @@ const userController = {
       } catch (err) {
           next(err)
       }
+  },
+  byId: async (req: Request, res: Response, next: NextFunction)=>{
+    const {id} = req.params;
+    const user = await User.findById({userId: id})
+    if(!user) {
+      return next(new ErrorResponse("No se encontro usuario", 404))
+    };
+    res.status(200).json({
+      success: true,
+      msg:"Usuario encontrado",
+      data: user
+    })
   }
 };
 
