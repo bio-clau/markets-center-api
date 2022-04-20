@@ -35,10 +35,11 @@ const adminController = {
                 name,
                 image
             }, {new:true})
+            const allCategories = await Categories.find();
             res.status(201).json({
                 success: true,
                 msg: "Categoría modificada con exito.",
-                data: newCategory
+                data: allCategories
             })
         } catch (err) {
             next(err)
@@ -48,13 +49,14 @@ const adminController = {
     addCategories: async (req: Request, res: Response, next: NextFunction) => {
         const newCategories = new Categories(req.body);
         try {
-            await newCategories.save((error: Object, categorie: Object) => {
+            await newCategories.save(async (error: Object, categorie: Object) => {
                 if (error) return next(new ErrorResponse("All parameters are required", 404));
+                const allCategories = await Categories.find();
                 if (categorie) {
                     res.json({
                         success: true,
                         msg: "Categorie successfully created",
-                        data: categorie
+                        data: allCategories
                     });
                 }
             });
