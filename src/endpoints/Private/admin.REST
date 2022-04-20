@@ -13,4 +13,4 @@ Content-Type: application/json
 }
 
 ### delete un usuario, recibe el userId
-DELETE http://localhost:4000/api/admin/userDelete/ieo0w5utv89w4uyt
+DELETE http://localhost:4000/api/admin/userDelete/Y3L7pOkLg0Q1PzHS6x40niw6nNj1

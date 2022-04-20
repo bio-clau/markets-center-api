@@ -42,7 +42,7 @@ const orderControllers = {
     sendOrder: async(req: Request, res: Response, next: NextFunction) => {
         const {id} = req.params
         try {
-            const orderId = await Order.findById(id).populate({path: 'user', select: 'name'}).exec();
+            const orderId = await Order.findById(id).populate('userId');
             if(Object.keys(orderId).length > 0) {
                 res.json({
                     success: true,
