@@ -12,11 +12,12 @@ const adminController = {
             if (!category) {
                 return next(new ErrorResponse("Error al eliminar categoría", 400))
             }
-            await Categories.findByIdAndDelete(idCategory)
+            await Categories.findByIdAndDelete(idCategory);
+            const categories = await Categories.find();
             res.status(200).json({
                 success: true,
                 msg: 'La categoría sue eliminada exitosamente',
-                data: []
+                data: categories
             })
         } catch (err) {
             next(err)
