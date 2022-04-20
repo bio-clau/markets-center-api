@@ -4,11 +4,11 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "node build/src/app.js",
+    "start": "nodemon",
     "ts:node": "ts-node ./src/app.ts",
     "build": "tsc",
     "clean": "rm -rf build",
-    "dev": "nodemon"
+    "dev": "build/src/app.js"
   },
   "repository": {
     "type": "git",

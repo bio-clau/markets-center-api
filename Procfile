@@ -1,1 +1,1 @@
-web: npm run ts:node
+web: yarn start
