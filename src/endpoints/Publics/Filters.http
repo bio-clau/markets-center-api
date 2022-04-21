@@ -1,1 +1,1 @@
-GET http://localhost:4000/api/public/filter?id=625c8bf646bd1097c3076bfd&categories=Cereales y derivados
+GET http://localhost:4000/api/public/filter?id=625c8c174166ea24dca8c4e6

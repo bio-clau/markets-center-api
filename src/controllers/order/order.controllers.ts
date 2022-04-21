@@ -2,6 +2,7 @@ import { Response, Request, NextFunction } from "express";
 const ErrorResponse = require("../../helpers/errorConstructor");
 const Product = require('../../models/Product')
 const Order = require('../../models/Order')
+const User = require("../../models/User");
 
 const orderControllers = {
     addOrder: async (req: Request, res: Response, next: NextFunction) => {
@@ -57,6 +58,35 @@ const orderControllers = {
             next(error);
         }
     },
+    
+    buyersOfSeller: async(req: Request, res: Response, next: NextFunction) => {
+        const { id } = req.params
+        try {
+            const user = await User.findById(id)
+            if(!user) {
+                return next(new ErrorResponse("El usuario no existe", 404))
+            }
+            const orders = await Order.find();
+            let aux: string[] = [];
+            for await (const element of orders) {
+                let auxiliar = element.products
+                for await(const product of auxiliar) {
+                    const productId = await Product.findById(`${product.productId}`);
+                    if(productId !== null && `${productId.userId}` === id) {
+                        !aux.includes(`${element._id}`) && aux.push(`${element._id}`);
+                    }
+                }
+            }
+            const orderBuyers = await Order.find({_id: aux});
+            res.json({
+                success: true,
+                msg: "Todas las ordenes coincidentes fueron enviadas",
+                data: orderBuyers
+            });
+        } catch (error) {
+            next(error);
+        }
+    }
 }
 
 module.exports = orderControllers;

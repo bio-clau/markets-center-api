@@ -20,7 +20,7 @@ const productController = {
             }
             img = result.url
         }
-        
+
         const newProduct = new Product({
             name,
             description,
@@ -49,8 +49,27 @@ const productController = {
     //@route PUT /api/private/product/id
     //access private
     update: async (req: Request, res: Response, next: NextFunction) => {
+        const { name, description, image, stock, category, price, } = req.body;
+        const user = await User.findById(req.params.id);
+        let img = image
+        if (image.length > 0 && image !== user[0].image) {
+            const result = await cloudinary.uploader.upload(image);
+            if (!result) {
+                return res.status(503).json('Upload failed');
+            }
+            img = result.url
+        }
         try {
-            Product.findByIdAndUpdate(req.params.id, { $set: req.body }, { new: true, runValidators: true }, (err: Object, product: Object) => {
+            Product.findByIdAndUpdate(req.params.id, {
+                $set: {
+                    name,
+                    description,
+                    image: img,
+                    stock,
+                    category,
+                    price
+                }
+            }, { new: true, runValidators: true }, (err: Object, product: Object) => {
                 if (err) return next(new ErrorResponse("Id not found", 404))
                 if (product) {
                     res.json({
