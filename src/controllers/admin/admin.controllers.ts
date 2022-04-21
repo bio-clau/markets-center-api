@@ -5,7 +5,7 @@ const Categories = require('../../models/Categories.ts');
 const User = require('../../models/User');
 
 const adminController = {
-    delCategory: async (req: Request, res: Response, next:NextFunction)=> {
+    delCategory: async (req: Request, res: Response, next: NextFunction) => {
         const idCategory = req.params.id;
         try {
             const category = await Categories.findById(idCategory);
@@ -23,18 +23,18 @@ const adminController = {
             next(err)
         }
     },
-    updateCategory: async (req:Request, res:Response, next:NextFunction) => {
+    updateCategory: async (req: Request, res: Response, next: NextFunction) => {
         try {
-            const {id} = req.params;
-            const {name, image} = req.body;
+            const { id } = req.params;
+            const { name, image } = req.body;
             const cat = await Categories.findById(id);
-            if(!cat){
+            if (!cat) {
                 return next(new ErrorResponse("La categroia no fue encontrada", 404))
             }
             const newCategory = await Categories.findByIdAndUpdate(id, {
                 name,
                 image
-            }, {new:true})
+            }, { new: true })
             const allCategories = await Categories.find();
             res.status(201).json({
                 success: true,
@@ -45,7 +45,7 @@ const adminController = {
             next(err)
         }
     },
-    
+
     addCategories: async (req: Request, res: Response, next: NextFunction) => {
         const newCategories = new Categories(req.body);
         try {
@@ -55,7 +55,7 @@ const adminController = {
                 if (categorie) {
                     res.json({
                         success: true,
-                        msg: "Categorie successfully created",
+                        msg: "Category successfully created",
                         data: allCategories
                     });
                 }
@@ -64,21 +64,42 @@ const adminController = {
             next(error);
         }
     },
-    deleteUser: async (req: Request, res: Response, next: NextFunction)=>{
-        const {id} = req.params;
-      try {
-        const user = await User.findOne({userId: id});
-        if(!user){
-            return next(new ErrorResponse("No se pudo eliminar el usuario", 400))
+    deleteUser: async (req: Request, res: Response, next: NextFunction) => {
+        const { id } = req.params;
+        try {
+            const user = await User.findOne({ userId: id });
+            if (!user) {
+                return next(new ErrorResponse("No se pudo eliminar el usuario", 400))
+            }
+            await User.findByIdAndDelete(user._id)
+            res.status(200).json({
+                success: true,
+                msg: "Usuario eliminado correctamente"
+            })
+        } catch (err) {
+            next(err)
         }
-        await User.findByIdAndDelete(user._id)
-        res.status(200).json({
-            success: true,
-            msg: "Usuario eliminado correctamente"
-        })
-      } catch (err) {
-          next(err)
-      }
+    },
+    upgradeAdmin: async (req: Request, res: Response, next: NextFunction) => {
+        const { id } = req.params;
+        try {
+            const user = await User.findById(id).exec();
+            if (!user) {
+                return next(new ErrorResponse("No se encontro el usuario", 404));
+            }
+            User.findByIdAndUpdate(id, { isAdmin: true }, (error: Object, user: Object) => {
+                if (error) return next(new ErrorResponse("No fue posible hacer Admin al usuario", 404));
+                else {
+                    res.json({
+                        success: true,
+                        msg: "El usuario fue convertido a Admin",
+                        data: user
+                    });
+                }
+            });
+        } catch (error) {
+            next(error);
+        }
     }
 }
 
