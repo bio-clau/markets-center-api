@@ -13,13 +13,9 @@ Content-Type: application/json
 }
 
 ### Update a product
-PUT http://localhost:4000/api/private/product/:id
+PUT http://localhost:4000/api/private/product/62607ae3bac751b2acb6dc4f
 Content-Type: application/json
 
 {
-    "name": "manzanitaNueva",
-    "description": "blablablasx3",
-    "image": "imagensita",
-    "stock": 2,
-    "price": 8000
+    "stock": 200,
 }

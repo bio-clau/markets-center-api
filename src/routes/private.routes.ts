@@ -1,7 +1,7 @@
 import { Router } from "express";
 const productController = require("../controllers/products/product.controllers");
 const userController = require('../controllers/users/users.controllers');
-const {addOrder, sendOrder} = require('../controllers/order/order.controllers')
+const {addOrder, sendOrder, buyersOfSeller} = require('../controllers/order/order.controllers')
 
 const router = Router();
 
@@ -12,6 +12,7 @@ router.post('/product', productController.add);
 
 router.post('/addOrder', addOrder);
 router.get('/sendOrder/:id', sendOrder)
+router.get('/buyersOfSeller/:id', buyersOfSeller)
 
 //users
 router.post('/users/add', userController.add);
