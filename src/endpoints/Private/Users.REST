@@ -19,7 +19,7 @@ Content-Type: application/json
 }
 
 ### actualiza un usuario
-PUT http://localhost:4000/api/private/users/update
+PUT http://localhost:4000/api/private/users/update/
 Content-Type: application/json
 
 {
@@ -32,7 +32,7 @@ Content-Type: application/json
     "IdDocument": 12345678,
     "dateofBirth": "25/10/87",
     "address": "cualquier casa",
-    "isAdmin": false
+    "isAdmin": true
 }
 
 ### get de todos los vendedores
