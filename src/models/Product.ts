@@ -7,6 +7,7 @@ interface IProduct {
     category: [];
     stock: number;
     price: number;
+    score: [];
     userId: mongoose.Schema.Types.ObjectId;
 }
 
@@ -36,6 +37,19 @@ const ProductSchema = new mongoose.Schema<IProduct>({
         type: Number,
         required: [true, "price is required"]
     },
+    score: [{
+        total: {
+            type: Number,
+        },
+        autors: {
+            type: Number,
+        },
+        score: {
+            type:Number,
+            enum: [0,1,2,3,4,5],
+            default: 0
+        }
+    }],
     userId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "User"
