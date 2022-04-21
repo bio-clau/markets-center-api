@@ -1,4 +1,1 @@
-GET http://localhost:4000/api/public/filter/bySeller/62573b9bf94ccd0d5b502f1f
-
-###
-GET http://localhost:4000/api/public/filter/byCategory?categories=vErDuras2
+GET http://localhost:4000/api/public/filter?id=625c8bf646bd1097c3076bfd&categories=Cereales y derivados

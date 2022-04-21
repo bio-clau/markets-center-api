@@ -11,6 +11,7 @@ interface IUser {
     dateOfBirth: any;
     image: string;
     address: string;
+    reviews: string;
     delivery: boolean;
 }
 
@@ -66,6 +67,9 @@ const UserSchema = new Schema<IUser>({
         required: false
     },
     address: {
+        type: String,
+    },
+    reviews: {
         type: String,
     },
     delivery: {
