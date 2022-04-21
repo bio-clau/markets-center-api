@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 const ErrorResponse = require("../../helpers/errorConstructor");
-
+const { cloudinary } = require('../../config/cloudinary');
 const Categories = require('../../models/Categories.ts');
 const User = require('../../models/User');
 
@@ -27,13 +27,21 @@ const adminController = {
         try {
             const { id } = req.params;
             const { name, image } = req.body;
+            let img = '';
+            if (image.length > 0) {
+                const result = await cloudinary.uploader.upload(image);
+                if (!result) {
+                    return res.status(503).json('Upload failed');
+                }
+                img = result.url
+            }
             const cat = await Categories.findById(id);
             if (!cat) {
                 return next(new ErrorResponse("La categroia no fue encontrada", 404))
             }
             const newCategory = await Categories.findByIdAndUpdate(id, {
                 name,
-                image
+                image: img
             }, { new: true })
             const allCategories = await Categories.find();
             res.status(201).json({
@@ -71,10 +79,12 @@ const adminController = {
             if (!user) {
                 return next(new ErrorResponse("No se pudo eliminar el usuario", 400))
             }
-            await User.findByIdAndDelete(user._id)
+            await User.findByIdAndDelete(user._id);
+            const users = await User.find();
             res.status(200).json({
                 success: true,
-                msg: "Usuario eliminado correctamente"
+                msg: "Usuario eliminado correctamente",
+                data: users
             })
         } catch (err) {
             next(err)
@@ -87,16 +97,13 @@ const adminController = {
             if (!user) {
                 return next(new ErrorResponse("No se encontro el usuario", 404));
             }
-            User.findByIdAndUpdate(id, { isAdmin: true }, (error: Object, user: Object) => {
-                if (error) return next(new ErrorResponse("No fue posible hacer Admin al usuario", 404));
-                else {
-                    res.json({
-                        success: true,
-                        msg: "El usuario fue convertido a Admin",
-                        data: user
-                    });
-                }
-            });
+            User.findByIdAndUpdate(id, { isAdmin: true });
+            const users = await User.find();
+            res.status(200).json({
+                success: true,
+                msg: "Usuario convertido a Admin correctamente",
+                data: users
+            })
         } catch (error) {
             next(error);
         }
