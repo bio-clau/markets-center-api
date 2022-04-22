@@ -105,7 +105,10 @@ const adminController = {
             if (!user) {
                 return next(new ErrorResponse("No se encontro el usuario", 404));
             }
-            User.findByIdAndUpdate(id, { isAdmin: true });
+            await User.findByIdAndUpdate(id, {
+                isAdmin: true,
+                isSeller: false
+            });
             const users = await User.find();
             res.status(200).json({
                 success: true,
