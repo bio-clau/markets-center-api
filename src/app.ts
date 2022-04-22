@@ -29,6 +29,7 @@ app.use(express.urlencoded({ extended: true, limit: '50mb' }));
 app.use('/api/private', require('./routes/private.routes'));
 app.use('/api/public', require('./routes/public.routes'));
 app.use('/api/admin', require('./routes/admin.routes'));
+app.use('/api/payment', require('./routes/payment.routes'))
 
 //ErrorHandler debe estar despues de todas las rutas
 app.use(errorHandler);

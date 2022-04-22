@@ -73,16 +73,27 @@ const userController = {
         dateofBirth,
         address,
         delivery,
+        uploadImg
       } = req.body;
+      let img= ''
       const user = await User.findOne({ userId: user_id });
       if (!user) {
         return next(new ErrorResponse("No se encontro el usuario", 404));
+      }
+      if(uploadImg){
+        const result = await cloudinary.uploader.upload(picture);
+        if (!result) {
+          return res.status(503).json('Upload failed');
+        }
+        img=result.url
+      } else {
+        img=picture
       }
       const userUpdated = await User.findOneAndUpdate(
         { userId: user_id },
         {
           name,
-          image: picture,
+          image: img,
           email,
           isSeller,
           phone,
