@@ -3,7 +3,7 @@
 GET http://localhost:4000/api/public/products
 
 ### Getting product by his id
-GET http://localhost:4000/api/public/product/62599a4556b68cabab527979
+GET http://localhost:4000/api/public/product/62607ae3bac751b2acb6dc4f
 
 ### Delete a product by his id
 

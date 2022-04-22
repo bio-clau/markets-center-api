@@ -17,9 +17,15 @@ PUT http://localhost:4000/api/private/product/62607ae3bac751b2acb6dc4f
 Content-Type: application/json
 
 {
-    "name": "manzanitaNueva",
-    "description": "blablablasx3",
-    "image": "imagensita",
-    "stock": 2,
-    "price": 8000
+    "name": "Pan de pancho",
+    "description": "Pan para tus panchos",
+    "image": "http://res.cloudinary.com/markets-center/image/upload/v1650490083/qtivsvgflix9piqbzxkc.jpg",
+    "stock": 100,
+    "category": [
+      {
+        "_id": "625e18528435e20ed2b70f6c",
+        "name": "Cereales y derivados"
+      }
+    ],
+    "price": 200
 }
