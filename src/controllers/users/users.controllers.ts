@@ -1,5 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import { isNewExpression } from "typescript";
+const sendMail = require('../../config/sendMail')
+import {bienvenidaMail} from '../../mail/bienvenida'
 const ErrorResponse = require("../../helpers/errorConstructor");
 const {cloudinary} = require('../../config/cloudinary')
 
@@ -50,6 +52,13 @@ const userController = {
         delivery,
       });
       await user.save();
+      const texto = bienvenidaMail(user.name)
+      const msg = {
+        to: user.mail,
+        subject: 'Beinvenido a Merkets Center',
+        text: texto
+      };
+      await sendMail(msg);
       res.status(201).json({
         success: true,
         message: "Usuario ingresado satisfactoriamente",
