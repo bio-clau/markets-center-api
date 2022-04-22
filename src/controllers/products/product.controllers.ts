@@ -49,10 +49,10 @@ const productController = {
     //@route PUT /api/private/product/id
     //access private
     update: async (req: Request, res: Response, next: NextFunction) => {
-        const { name, description, image, stock, category, price, } = req.body;
-        const user = await User.findById(req.params.id);
+        const { name, description, image, stock, category, price } = req.body;
+        const product = await Product.findById(req.params.id);
         let img = image
-        if (image.length > 0 && image !== user[0].image) {
+        if (image.length > 0 && image !== product.image) {
             const result = await cloudinary.uploader.upload(image);
             if (!result) {
                 return res.status(503).json('Upload failed');

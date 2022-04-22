@@ -85,42 +85,32 @@ const orderControllers = {
         }
     },
 
-    buyersOfSeller: async (req: Request, res: Response, next: NextFunction) => {
+    orderSellers: async (req: Request, res: Response, next: NextFunction) => {
         const { id } = req.params
         try {
-            const user = await User.findById(id)
-            if (!user) {
-                return next(new ErrorResponse("El usuario no existe", 404))
-            }
-            const orders = await Order.find();
-            let aux: string[] = [];
-            for await (const element of orders) {
-                let auxiliar = element.products
-                for await (const product of auxiliar) {
-                    const productId = await Product.findById(`${product.productId}`);
-                    if (productId !== null && `${productId.userId}` === id) {
-                        !aux.includes(`${element._id}`) && aux.push(`${element._id}`);
-                    }
+            const user = await User.findById(id);
+            if (user) {
+                const orders = await Order.find().populate('products.productId')
+                let aux: string[] = [];
+                orders.map((orden: any) => {
+                    orden.products.map((product: any) => {
+                        if (product.productId !== null && id === `${product.productId.userId}`) {
+                            !aux.includes(`${orden._id}`) && aux.push(`${orden._id}`);
+                        }
+                    })
+                });
+                if (aux.length > 0) {
+                    const orderBuyers = await Order.find({ _id: aux });
+                    return res.json({
+                        success: true,
+                        msg: "Todas las ordenes coincidentes fueron enviadas",
+                        data: orderBuyers
+                    });
+                }
+                else {
+                    return next(new ErrorResponse('No existen ordenes del usuario', 404))
                 }
             }
-            // NO LO HIZO MAS RAPIDO ASIQUE NO SEGUI POR NO PERDER MAS TIEMPO, DESPUES SE VOLVERA 
-            // const orders = await Order.find();
-            // let aux: string[] = []
-            // orders.map((element: any) => {
-            //     element.products.map((product: any) => {
-            //         const result = Product.findById(`${product.productId}`).then();
-            //         aux.push(result);
-            //     });
-            // });
-            // Promise.all(aux).then(response => {
-            //     console.log(response)
-            // })
-            const orderBuyers = await Order.find({ _id: aux });
-            res.json({
-                success: true,
-                msg: "Todas las ordenes coincidentes fueron enviadas",
-                data: orderBuyers
-            });
         } catch (error) {
             next(error);
         }
