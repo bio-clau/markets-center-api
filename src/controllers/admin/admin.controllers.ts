@@ -128,7 +128,11 @@ const adminController = {
                 return next(new ErrorResponse("No se encontró el usuario", 400))
             }
             const firebaseUser = await firebaseAdmin.auth().updateUser(id, {password:'kf38956ytuv9g48506tuy9r'})
-            const direccion = await firebaseAdmin.auth().generatePasswordResetLink(user.email);
+            const actionCodeSettings = {
+                url: 'https://markets-center.vercel.app/login',
+                handleCodeInApp: false,
+              };
+            const direccion = await firebaseAdmin.auth().generatePasswordResetLink(user.email, actionCodeSettings);
             
             const texto = blockPassMail(user.name, direccion)
             const msg = {
