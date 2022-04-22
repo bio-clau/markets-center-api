@@ -1,5 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import { isCaseClause } from "typescript";
+import {blockPassMail} from '../../mail/blockPass'
 const ErrorResponse = require("../../helpers/errorConstructor");
 const { cloudinary } = require('../../config/cloudinary');
 const Categories = require('../../models/Categories.ts');
@@ -127,14 +128,13 @@ const adminController = {
                 return next(new ErrorResponse("No se encontró el usuario", 400))
             }
             const firebaseUser = await firebaseAdmin.auth().updateUser(id, {password:'kf38956ytuv9g48506tuy9r'})
-            const direccion = await firebaseAdmin.auth().generatePasswordResetLink(user.email)
+            const direccion = await firebaseAdmin.auth().generatePasswordResetLink(user.email);
+            
+            const texto = blockPassMail(user.name, direccion)
             const msg = {
                 to: user.email,
                 subject: 'Restablecer contraseña',
-                text: `<div> <h1>Restablecimiento de contraseña</h1>
-                <h3>¡Hola ${user.name}!</h3>
-                <p>Haga clic <a href=${direccion} licktracking=off>este link</a> en para restablecer su contraseña</P<
-                <div/>`,
+                text: texto,
               }
               await sendMail(msg)
             
