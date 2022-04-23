@@ -135,6 +135,7 @@ const productController = {
     //@route DELETE /api/private/product/:id
     //access private
     deleteProduct: async (req: Request, res: Response, next: NextFunction) => {
+
         const { id } = req.params;
         try {
             Product.findByIdAndDelete(id, (err: Object, productDeleted: Object) => {
@@ -149,6 +150,39 @@ const productController = {
             });
         } catch (error) {
             next(error)
+        }
+    },
+    createReview: async (req: Request, res: Response, next: NextFunction) => {
+        const { rating, comment } = req.body;
+        const product = await Product.findById(req.params.id);
+        const user = await User.find();
+
+        if (product) {
+            //already reviewed for user
+            const alreadyReviewed = product.reviews.find(
+                (r: any) => r.user === user._id
+            )
+            if (alreadyReviewed) {
+                return next(new ErrorResponse("Ya has calificado este producto", 400));
+            }
+
+            product.reviews.push({
+                rating,
+                comment,
+                user: user._id
+            });
+
+            product.numReviews = product.reviews.length;
+
+            product.rating = product.reviews.reduce((acc: any, item: any) => item.rating + acc, 0) / product.numReviews;
+            await product.save();
+            res.json({
+                success: true,
+                msg: "Calificación agregada correctamente",
+                data: product
+            });
+        } else {
+            next(new ErrorResponse("El producto no existe", 404));
         }
     }
 }
