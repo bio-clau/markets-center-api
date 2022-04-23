@@ -1,5 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import { isNewExpression } from "typescript";
+const sendMail = require('../../config/sendMail')
+import {bienvenidaMail} from '../../mail/bienvenida'
 const ErrorResponse = require("../../helpers/errorConstructor");
 const {cloudinary} = require('../../config/cloudinary')
 
@@ -50,6 +52,13 @@ const userController = {
         delivery,
       });
       await user.save();
+      const texto = bienvenidaMail(user.name)
+      const msg = {
+        to: user.mail,
+        subject: 'Beinvenido a Merkets Center',
+        text: texto
+      };
+      await sendMail(msg);
       res.status(201).json({
         success: true,
         message: "Usuario ingresado satisfactoriamente",
@@ -73,16 +82,27 @@ const userController = {
         dateofBirth,
         address,
         delivery,
+        uploadImg
       } = req.body;
+      let img= ''
       const user = await User.findOne({ userId: user_id });
       if (!user) {
         return next(new ErrorResponse("No se encontro el usuario", 404));
+      }
+      if(uploadImg){
+        const result = await cloudinary.uploader.upload(picture);
+        if (!result) {
+          return res.status(503).json('Upload failed');
+        }
+        img=result.url
+      } else {
+        img=picture
       }
       const userUpdated = await User.findOneAndUpdate(
         { userId: user_id },
         {
           name,
-          image: picture,
+          image: img,
           email,
           isSeller,
           phone,

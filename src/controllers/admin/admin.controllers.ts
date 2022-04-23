@@ -1,8 +1,13 @@
 import { NextFunction, Request, Response } from "express";
+import { isCaseClause } from "typescript";
+import {blockPassMail} from '../../mail/blockPass'
 const ErrorResponse = require("../../helpers/errorConstructor");
 const { cloudinary } = require('../../config/cloudinary');
 const Categories = require('../../models/Categories.ts');
 const User = require('../../models/User');
+// const firebaseAdmin = require('../../config/firebase')
+import {firebaseAdmin} from '../../config/firebase'
+const sendMail = require('../../config/sendMail')
 
 const adminController = {
     delCategory: async (req: Request, res: Response, next: NextFunction) => {
@@ -75,6 +80,10 @@ const adminController = {
     deleteUser: async (req: Request, res: Response, next: NextFunction) => {
         const { id } = req.params;
         try {
+            if(!id){
+                return next(new ErrorResponse("ID invalido", 400))
+            }
+            await firebaseAdmin.auth().deleteUser(id)
             const user = await User.findOne({ userId: id });
             if (!user) {
                 return next(new ErrorResponse("No se pudo eliminar el usuario", 400))
@@ -97,7 +106,10 @@ const adminController = {
             if (!user) {
                 return next(new ErrorResponse("No se encontro el usuario", 404));
             }
-            User.findByIdAndUpdate(id, { isAdmin: true });
+            await User.findByIdAndUpdate(id, {
+                isAdmin: true,
+                isSeller: false
+            });
             const users = await User.find();
             res.status(200).json({
                 success: true,
@@ -106,6 +118,29 @@ const adminController = {
             })
         } catch (error) {
             next(error);
+        }
+    },
+    blockPass: async (req: Request, res: Response, next:NextFunction) =>{
+        const {id} = req.params;
+        try {
+            const user = await User.findOne({ userId: id });
+            if (!user) {
+                return next(new ErrorResponse("No se encontró el usuario", 400))
+            }
+            const firebaseUser = await firebaseAdmin.auth().updateUser(id, {password:'kf38956ytuv9g48506tuy9r'})
+            const direccion = await firebaseAdmin.auth().generatePasswordResetLink(user.email);
+            
+            const texto = blockPassMail(user.name, direccion)
+            const msg = {
+                to: user.email,
+                subject: 'Restablecer contraseña',
+                text: texto,
+              }
+              await sendMail(msg)
+            
+            res.status(200).json('okis')
+        } catch (err) {
+            next(err)
         }
     }
 }

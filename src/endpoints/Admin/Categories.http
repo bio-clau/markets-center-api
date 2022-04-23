@@ -8,3 +8,11 @@ Content-Type: application/json
 
 ### Upgrade a User to Admin
 PUT http://localhost:4000/api/admin/userAdmin/625c8bf646bd1097c3076bfd
+
+### delete user
+DELETE http://localhost:4000/api/admin/userDelete/bz8xCHh6ulcU1bvl2T8f7BaKPvr2
+
+### bloqueo pass
+GET http://localhost:4000/api/admin/blockPass/DpP25lHl24b8r8JS1IxZMkBMpms2
+
+
