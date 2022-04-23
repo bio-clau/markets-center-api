@@ -1,14 +1,15 @@
 import { Router } from "express";
-const productController = require("../controllers/products/product.controllers");
+const { createReview, update, add } = require("../controllers/products/product.controllers");
 const userController = require('../controllers/users/users.controllers');
-const {addOrder, sendOrder, orderSellers, updateOrder} = require('../controllers/order/order.controllers')
+const { addOrder, sendOrder, orderSellers, updateOrder } = require('../controllers/order/order.controllers')
 
 const router = Router();
 
 //products
 
-router.put('/product/:id', productController.update);
-router.post('/product', productController.add);
+router.put('/product/:id', update);
+router.post('/product', add);
+router.post('/product/:id/review/add', createReview)
 
 router.post('/addOrder', addOrder);
 router.get('/sendOrder/:id', sendOrder)
