@@ -1,4 +1,6 @@
 import { NextFunction, Request, Response } from "express";
+import { checkoutMail } from '../../mail/checkout'
+const sendMail = require('../../config/sendMail')
 const Cart = require('../../models/Cart.ts');
 const Order = require('../../models/Order')
 const ErrorResponse = require("../../helpers/errorConstructor");
@@ -8,7 +10,7 @@ const cartController = {
         const { id } = req.params;
         try {
             if (id) {
-                const userCart = await Cart.findOne({ userId: id }).populate([{path: 'products.productId'},{ path: 'userId' }]);
+                const userCart = await Cart.findOne({ userId: id }).populate([{ path: 'products.productId' }, { path: 'userId' }]);
                 if (userCart) {
                     if (req.body.products && req.body.amount) {
                         Cart.findByIdAndUpdate(userCart._id, { $set: req.body }, { new: true, runValidators: true }, (error: Object, cart: Object) => {
@@ -20,7 +22,7 @@ const cartController = {
                                     data: cart
                                 });
                             }
-                        }).populate([{path: 'products.productId'},{ path: 'userId' }]);
+                        }).populate([{ path: 'products.productId' }, { path: 'userId' }]);
                     }
                     else {
                         res.status(200).json({
@@ -47,7 +49,6 @@ const cartController = {
         try {
             if (id) {
                 const userCart = await Cart.findOne({ userId: id }).populate('userId').exec();
-                console.log(userCart)
                 if (userCart) {
                     new Order({
                         userId: id,
@@ -56,13 +57,21 @@ const cartController = {
                         address: userCart.userId.address,
                         status: "Approved"
                     });
-                    
+
+                    const texto = checkoutMail(userCart.name)
+                    const msg = {
+                        to: userCart.email,
+                        subject: 'Gracias por su compra en Markets Center!',
+                        text: texto
+                    };
+                    await sendMail(msg);
+
                     Cart.findByIdAndUpdate(userCart._id, {
                         $set: {
                             products: [],
                             amount: 0
                         }
-                    },  { new: true, runValidators: true }, (error: Object, cart: Object) => {
+                    }, { new: true, runValidators: true }, (error: Object, cart: Object) => {
                         if (error) next(new ErrorResponse("El carrito no existe", 404));
                         else {
                             return res.json({

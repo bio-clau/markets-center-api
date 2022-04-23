@@ -53,8 +53,8 @@ const userController = {
       await user.save();
       const texto = bienvenidaMail(user.name)
       const msg = {
-        to: user.mail,
-        subject: 'Beinvenido a Merkets Center',
+        to: user.email,
+        subject: 'Bienvenido a Markets Center',
         text: texto
       };
       await sendMail(msg);
