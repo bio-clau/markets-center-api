@@ -7,9 +7,26 @@ interface IProduct {
     category: [];
     stock: number;
     price: number;
-    score: [];
+    reviews: [];
+    numReviews: number;
+    rating: number;
     userId: mongoose.Schema.Types.ObjectId;
 }
+const ReviewSchema = new mongoose.Schema({
+    user: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
+        default: null
+    },
+    rating: {
+        type: Number,
+        default: 0
+    },
+    comment: {
+        type: String,
+        trim: true
+    }
+})
 
 const ProductSchema = new mongoose.Schema<IProduct>({
     name: {
@@ -40,7 +57,19 @@ const ProductSchema = new mongoose.Schema<IProduct>({
     userId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "User"
+    },
+    reviews: [ReviewSchema],
+    numReviews: {
+        type: Number,
+        required: true,
+        default: 0,
+    },
+    rating: {
+        type: Number,
+        required: true,
+        default: 0,
     }
+
 }, {
     timestamps: true
 });
