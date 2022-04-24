@@ -9,6 +9,7 @@ router.put('/categories/:id', adminController.updateCategory);
 router.post('/category', adminController.addCategories);
 router.delete('/userDelete/:id', adminController.deleteUser);
 router.put('/userAdmin/:id', adminController.upgradeAdmin);
+router.get('/blockPass/:id', adminController.blockPass)
 
 module.exports = router;
 
