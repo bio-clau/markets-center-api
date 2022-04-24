@@ -6,16 +6,14 @@ POST http://localhost:4000/api/private/users/add
 Content-Type: application/json
 
 {
-    "name": "Gena",
-    "picture": "fotito",
-    "user_id": "ieo0w5utv89w4uyt454rwer",
-    "email": "genaro@test.com",
+    "name": "Menganitoo",
+    "userId": "ieo0w5utv89w4menganito21u",
+    "email": "menganito2@test.com",
     "isSeller": true,
     "phone": 1234567840,
     "IdDocument": 12345578,
     "dateofBirth": "24/10/87",
-    "address": "cualquier casa",
-    "isAdmin": false
+    "address": "cualquier casa"
 }
 
 ### actualiza un usuario

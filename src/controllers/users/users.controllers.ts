@@ -1,10 +1,9 @@
 import { NextFunction, Request, Response } from "express";
-import { isNewExpression } from "typescript";
 const sendMail = require('../../config/sendMail')
 import {bienvenidaMail} from '../../mail/bienvenida'
 const ErrorResponse = require("../../helpers/errorConstructor");
 const {cloudinary} = require('../../config/cloudinary')
-
+const Cart = require('../../models/Cart');
 const User = require("../../models/User");
 const Order = require("../../models/Order")
 
@@ -54,11 +53,16 @@ const userController = {
       await user.save();
       const texto = bienvenidaMail(user.name)
       const msg = {
-        to: user.mail,
-        subject: 'Beinvenido a Merkets Center',
+        to: user.email,
+        subject: 'Bienvenido a Markets Center',
         text: texto
       };
       await sendMail(msg);
+      
+      const newUser = await User.findOne({userId: userId}).exec();
+      const newUserCart = new Cart({userId: newUser._id });
+      await newUserCart.save();
+
       res.status(201).json({
         success: true,
         message: "Usuario ingresado satisfactoriamente",
