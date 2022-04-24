@@ -78,7 +78,7 @@ const userController = {
       const {
         name,
         picture,
-        user_id,
+        userId,
         email,
         isSeller,
         phone,
@@ -89,7 +89,7 @@ const userController = {
         uploadImg
       } = req.body;
       let img= ''
-      const user = await User.findOne({ userId: user_id });
+      const user = await User.findOne({ userId: userId });
       if (!user) {
         return next(new ErrorResponse("No se encontro el usuario", 404));
       }
@@ -103,7 +103,7 @@ const userController = {
         img=picture
       }
       const userUpdated = await User.findOneAndUpdate(
-        { userId: user_id },
+        { userId: userId },
         {
           name,
           image: img,
