@@ -3,6 +3,9 @@ import { isNewExpression } from "typescript";
 const ErrorResponse = require("../../helpers/errorConstructor");
 const {cloudinary} = require('../../config/cloudinary')
 
+const { STRIPE_API_KEY } = process.env
+const stripe = require('stripe')(STRIPE_API_KEY);
+
 const User = require("../../models/User");
 const Order = require("../../models/Order")
 
@@ -50,6 +53,23 @@ const userController = {
         delivery,
       });
       await user.save();
+
+      if(isSeller){
+        const account = await stripe.accounts.create({
+          type: 'custom',
+          country: 'US',
+          email: email,
+          business_type: 'individual',
+          id: userId,
+          first_name: name,
+          phone: phone,
+          capabilities: {
+            card_payments: {requested: true},
+            transfers: {requested: true},
+          },
+          
+        });
+      }
       res.status(201).json({
         success: true,
         message: "Usuario ingresado satisfactoriamente",

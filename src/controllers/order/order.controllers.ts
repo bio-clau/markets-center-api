@@ -3,6 +3,10 @@ const ErrorResponse = require("../../helpers/errorConstructor");
 const Product = require('../../models/Product')
 const Order = require('../../models/Order')
 const User = require("../../models/User");
+const Stripe = require('stripe')
+const { STRIPE_API_KEY } = process.env
+const stripe = new Stripe(STRIPE_API_KEY)
+
 
 const orderControllers = {
     addOrder: async (req: Request, res: Response, next: NextFunction) => {
@@ -85,6 +89,26 @@ const orderControllers = {
             });
         } catch (error) {
             next(error);
+        }
+    },
+    payment: async(req: Request, res: Response, next: NextFunction) => {
+        try {
+            const { id, amount } = req.body
+            const payment = await stripe.paymentIntents.create({
+                amount: amount,
+                currency: "USD",
+                payment_method: id,
+                confirm: true
+            })
+
+            res.json({
+                success: true,
+                msg: "El pago fue exitoso",
+                data: payment
+            });
+        } catch (error) {
+            console.log(error)
+            next(error)
         }
     }
 }

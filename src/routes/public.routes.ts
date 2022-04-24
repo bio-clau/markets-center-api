@@ -3,12 +3,15 @@ const { filterBySellerAndCategories } = require('../controllers/filters/filters.
 const { all, product, deleteProduct } = require('../controllers/products/product.controllers');
 const { allCategories } = require('../controllers/categories/categories.controllers');
 const { add, updateReview, allReviews, deleteReview } = require('../controllers/reviews/review.controllers');
+const { payment } = require('../controllers/order/order.controllers')
+
 const router = Router();
 
 /* Products */
 router.get('/products', all);
 router.get('/product/:id', product);
 router.delete('/product/:id', deleteProduct);
+
 
 /* Categories */
 router.get('/categories', allCategories);
