@@ -16,7 +16,7 @@ const productController = {
         if (image.length > 0) {
             const result = await cloudinary.uploader.upload(image);
             if (!result) {
-                return res.status(503).json('Upload failed');
+                return res.status(503).json('Falló carga de imágen');
             }
             img = result.url
         }
@@ -55,7 +55,7 @@ const productController = {
         if (image.length > 0 && image !== product.image) {
             const result = await cloudinary.uploader.upload(image);
             if (!result) {
-                return res.status(503).json('Upload failed');
+                return res.status(503).json('Falló carga de imagen');
             }
             img = result.url
         }
@@ -70,7 +70,7 @@ const productController = {
                     price
                 }
             }, { new: true, runValidators: true }, (err: Object, product: Object) => {
-                if (err) return next(new ErrorResponse("Id not found", 404))
+                if (err) return next(new ErrorResponse("No se encontró el ID", 404))
                 if (product) {
                     res.json({
                         success: true,

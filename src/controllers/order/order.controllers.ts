@@ -13,11 +13,11 @@ const orderControllers = {
         const newOrder = new Order(req.body);
         try {
             newOrder.save((error: Object, order: Object) => {
-                if (error) return next(new ErrorResponse("All parameters are required", 404));
+                if (error) return next(new ErrorResponse("ASe requieren todos los parametros", 404));
                 if (order) {
                     res.json({
                         success: true,
-                        msg: 'The order was created',
+                        msg: 'Orden creada exitosamente',
                         data: order
                     })
                 }
@@ -35,12 +35,12 @@ const orderControllers = {
             if (Object.keys(orderId).length > 0) {
                 res.json({
                     success: true,
-                    msg: 'The order were founded',
+                    msg: 'Orden encontrada',
                     data: orderId
                 })
             }
             else {
-                return next(new ErrorResponse("That product isn't exist", 404))
+                return next(new ErrorResponse("La orden no existe", 404))
             }
         } catch (error) {
             next(error);

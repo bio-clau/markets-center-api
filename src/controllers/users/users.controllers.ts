@@ -36,7 +36,7 @@ const userController = {
       if(uploadImg){
         const result = await cloudinary.uploader.upload(image);
         if (!result) {
-          return res.status(503).json('Upload failed');
+          return res.status(503).json('Falló la carga de la imagen');
         }
         img=result.url
       } else {
@@ -87,7 +87,7 @@ const userController = {
       res.status(201).json({
         success: true,
         message: "Usuario ingresado satisfactoriamente",
-        data: [],
+        data: newUser,
       });
     } catch (error) {
       next(error);
@@ -117,7 +117,7 @@ const userController = {
       if(uploadImg){
         const result = await cloudinary.uploader.upload(image);
         if (!result) {
-          return res.status(503).json('Upload failed');
+          return res.status(503).json('Falló la carga de la imagen');
         }
         img=result.url
       } else {

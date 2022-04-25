@@ -21,7 +21,7 @@ const adminController = {
             const categories = await Categories.find();
             res.status(200).json({
                 success: true,
-                msg: 'La categoría sue eliminada exitosamente',
+                msg: 'La categoría fue eliminada exitosamente',
                 data: categories
             })
         } catch (err) {
@@ -36,13 +36,13 @@ const adminController = {
             if (image.length > 0) {
                 const result = await cloudinary.uploader.upload(image);
                 if (!result) {
-                    return res.status(503).json('Upload failed');
+                    return res.status(503).json('Falló la carga de imágen');
                 }
                 img = result.url
             }
             const cat = await Categories.findById(id);
             if (!cat) {
-                return next(new ErrorResponse("La categroia no fue encontrada", 404))
+                return next(new ErrorResponse("La categoría no fue encontrada", 404))
             }
             const newCategory = await Categories.findByIdAndUpdate(id, {
                 name,
@@ -63,12 +63,12 @@ const adminController = {
         const newCategories = new Categories(req.body);
         try {
             await newCategories.save(async (error: Object, categorie: Object) => {
-                if (error) return next(new ErrorResponse("All parameters are required", 404));
+                if (error) return next(new ErrorResponse("Todos los parámetros son requeridos", 404));
                 const allCategories = await Categories.find();
                 if (categorie) {
                     res.json({
                         success: true,
-                        msg: "Category successfully created",
+                        msg: "Categoría creada exitosamente",
                         data: allCategories
                     });
                 }
@@ -81,7 +81,7 @@ const adminController = {
         const { id } = req.params;
         try {
             if(!id){
-                return next(new ErrorResponse("ID invalido", 400))
+                return next(new ErrorResponse("ID inválido", 400))
             }
             await firebaseAdmin.auth().deleteUser(id)
             const user = await User.findOne({ userId: id });
