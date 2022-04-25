@@ -2,8 +2,6 @@ import { Router } from "express";
 const { filterBySellerAndCategories } = require('../controllers/filters/filters.controllers')
 const { all, product, deleteProduct, createReview } = require('../controllers/products/product.controllers');
 const { allCategories } = require('../controllers/categories/categories.controllers');
-const { add, updateReview, allReviews, deleteReview } = require('../controllers/reviews/review.controllers');
-const { payment } = require('../controllers/order/order.controllers')
 
 const router = Router();
 

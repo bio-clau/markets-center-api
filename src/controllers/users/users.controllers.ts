@@ -55,7 +55,6 @@ const userController = {
         delivery,
       });
       await user.save();
-<<<<<<< HEAD
 
       if(isSeller){
         const account = await stripe.accounts.create({
@@ -73,7 +72,6 @@ const userController = {
           
         });
       }
-=======
       const texto = bienvenidaMail(user.name)
       const msg = {
         to: user.mail,
@@ -81,7 +79,6 @@ const userController = {
         text: texto
       };
       await sendMail(msg);
->>>>>>> 66f515c5ca8e0782e1dd51eeae3517e44b92d337
       res.status(201).json({
         success: true,
         message: "Usuario ingresado satisfactoriamente",
