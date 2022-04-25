@@ -31,13 +31,14 @@ const productController = {
             userId: userID
         });
         try {
-            newProduct.save((err: Object, product: Object) => {
+            newProduct.save(async (err: Object, product: Object) => {
                 if (err) return next(new ErrorResponse("Complete todos los campos", 400));
+                const allProducts = await Product.find();
                 if (product) {
                     res.status(201).json({
                         success: true,
                         msg: "Producto agregado correctamente",
-                        data: product
+                        data: allProducts
                     });
                 }
             });
