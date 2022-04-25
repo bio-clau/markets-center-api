@@ -2,9 +2,9 @@ POST http://localhost:4000/api/private/addOrder
 Content-Type: application/json
 
 {
-    "userId": "6256d71a93b21a9d5a4bec78",
+    "userId": "625eec6bb7cb0fb6204fdd15",
     "products":[
-        {"productId":"6262f1843d7b11c0d34bdd10", "quantity": 1}],
+        {"productId":"6262b22e953a8662d42d4c3e", "quantity": 1},{"productId":"6262b238953a8662d42d4c41", "quantity": 3}],
     "amount": 2800,
     "address":"fasfafdfasf",
     "status":"Pending"
