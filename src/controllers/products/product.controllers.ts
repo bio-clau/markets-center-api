@@ -137,16 +137,14 @@ const productController = {
     deleteProduct: async (req: Request, res: Response, next: NextFunction) => {
         const { id } = req.params;
         try {
-            Product.findByIdAndDelete(id, async (err: Object, productDeleted: Object) => {
-                const allProducts = await Product.find().populate({ path: 'category', select: "name" });
-                if (err) next(new ErrorResponse("El producto no existe", 404));
-                else {
-                    res.json({
-                        success: true,
-                        msg: "El producto fue eliminado con éxito",
-                        data: allProducts
-                    });
-                }
+            const productDelete = await Product.findById(id);
+            if (!productDelete) return next(new ErrorResponse("El producto no existe", 404));
+            await Product.findByIdAndDelete(id);
+            const products = await Product.find();
+            res.json({
+                success: true,
+                msg: "El producto fue eliminado exitosamente",
+                data: products
             });
         } catch (error) {
             next(error)
