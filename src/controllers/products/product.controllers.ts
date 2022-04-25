@@ -135,16 +135,16 @@ const productController = {
     //@route DELETE /api/private/product/:id
     //access private
     deleteProduct: async (req: Request, res: Response, next: NextFunction) => {
-
         const { id } = req.params;
         try {
             Product.findByIdAndDelete(id, (err: Object, productDeleted: Object) => {
+                const allProducts = Product.find().populate({ path: 'category', select: "name" });
                 if (err) next(new ErrorResponse("El producto no existe", 404));
                 else {
                     res.json({
                         success: true,
                         msg: "El producto fue eliminado con éxito",
-                        data: []
+                        data: allProducts
                     });
                 }
             });
@@ -153,33 +153,34 @@ const productController = {
         }
     },
     createReview: async (req: Request, res: Response, next: NextFunction) => {
-        const { rating, comment } = req.body;
+        const { rating, comment, user } = req.body;
         const product = await Product.findById(req.params.id);
-        const user = await User.find();
-
+        const userFind = await User.findById(user);
         if (product) {
             //already reviewed for user
             const alreadyReviewed = product.reviews.find(
-                (r: any) => r.user === user._id
+                (r: any) => r.user === userFind._id
             )
             if (alreadyReviewed) {
                 return next(new ErrorResponse("Ya has calificado este producto", 400));
             }
 
             product.reviews.push({
+                product: req.params.id,
+                user,
                 rating,
-                comment,
-                user: user._id
+                comment
             });
 
             product.numReviews = product.reviews.length;
 
             product.rating = product.reviews.reduce((acc: any, item: any) => item.rating + acc, 0) / product.numReviews;
             await product.save();
+            const allProducts = await Product.find().populate({ path: 'category', select: "name" });
             res.json({
                 success: true,
                 msg: "Calificación agregada correctamente",
-                data: product
+                data: allProducts
             });
         } else {
             next(new ErrorResponse("El producto no existe", 404));
