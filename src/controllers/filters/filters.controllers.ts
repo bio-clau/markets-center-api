@@ -2,6 +2,7 @@ import { Response, Request, NextFunction } from "express";
 const Product = require("../../models/Product");
 const Categories = require("../../models/Categories");
 const User = require("../../models/User");
+const Order = require("../../models/Order");
 const ErrorResponse = require("../../helpers/errorConstructor");
 
 const filtersControllers = {
@@ -60,6 +61,64 @@ const filtersControllers = {
                         });
                     }
                 });
+            }
+        } catch (error) {
+            next(error)
+        }
+    },
+    filterByStatus: async(req: Request, res: Response, next: NextFunction) => {
+        const { status } = req.query
+        try {
+            if(status === 'Approved') {
+                Order.find({status: 'Approved'},(error: Object, order: Object) => {
+                    if (error) return next(new ErrorResponse("No existen ordenes con ese status", 404));
+                    else {
+                        return res.json({
+                            success: true,
+                            msg: "Todas las ordenes coincidentes fueron enviadas",
+                            data: order
+                        });
+                    }
+                }).populate([{path: 'products.productId'},{ path: 'userId' }]);
+            }
+            else if(status === 'Pending') {
+                Order.find({status: 'Pending'},(error: Object, order: Object) => {
+                    if (error) return next(new ErrorResponse("No existen ordenes con ese status", 404));
+                    else {
+                        return res.json({
+                            success: true,
+                            msg: "Todas las ordenes coincidentes fueron enviadas",
+                            data: order
+                        });
+                    }
+                }).populate([{path: 'products.productId'},{ path: 'userId' }]);
+            }
+            else if(status === 'Rejected') {
+                Order.find({status: 'Rejected'},(error: Object, order: Object) => {
+                    if (error) return next(new ErrorResponse("No existen ordenes con ese status", 404));
+                    else {
+                        return res.json({
+                            success: true,
+                            msg: "Todas las ordenes coincidentes fueron enviadas",
+                            data: order
+                        });
+                    }
+                }).populate([{path: 'products.productId'},{ path: 'userId' }]);
+            }
+            else if(status === 'In process') {
+                Order.find({status: 'In process'},(error: Object, order: Object) => {
+                    if (error) return next(new ErrorResponse("No existen ordenes con ese status", 404));
+                    else {
+                        return res.json({
+                            success: true,
+                            msg: "Todas las ordenes coincidentes fueron enviadas",
+                            data: order
+                        });
+                    }
+                }).populate([{path: 'products.productId'},{ path: 'userId' }]);
+            }
+            else {
+                return next(new ErrorResponse("El status no existe", 404));
             }
         } catch (error) {
             next(error)

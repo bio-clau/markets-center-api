@@ -16,17 +16,16 @@ const cartSchema = new Schema<ICart>({
     products: [{
         productId: {
             type: Schema.Types.ObjectId,
-            ref: 'Product',
-            required: [true, 'Almenos un producto es requerido.']
+            ref: 'Product'
         },
         quantity: {
             type: Number,
-            default: 1
+            default: 0
         }
     }],
     amount: {
         type: Number,
-        required: [true, 'El monto es requerido.']
+        default: 0
     }
 },
     {

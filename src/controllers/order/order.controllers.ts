@@ -104,7 +104,7 @@ const orderControllers = {
                     })
                 });
                 if (aux.length > 0) {
-                    const orderBuyers = await Order.find({ _id: aux });
+                    const orderBuyers = await Order.find({ _id: aux }).populate([{path: 'products.productId'},{ path: 'userId' }]);
                     return res.json({
                         success: true,
                         msg: "Todas las ordenes coincidentes fueron enviadas",
