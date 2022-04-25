@@ -98,7 +98,7 @@ const userController = {
     try {
       const {
         name,
-        picture,
+        image,
         userId,
         email,
         isSeller,
@@ -115,13 +115,13 @@ const userController = {
         return next(new ErrorResponse("No se encontro el usuario", 404));
       }
       if(uploadImg){
-        const result = await cloudinary.uploader.upload(picture);
+        const result = await cloudinary.uploader.upload(image);
         if (!result) {
           return res.status(503).json('Upload failed');
         }
         img=result.url
       } else {
-        img=picture
+        img=image
       }
       const userUpdated = await User.findOneAndUpdate(
         { userId: userId },
