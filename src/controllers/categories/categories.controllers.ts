@@ -7,7 +7,7 @@ const categoriesController = {
             const allCategories = await Categories.find();
             res.json({
                 success: true,
-                msg: "All categories were shipped",
+                msg: "Todas las categorías fueron enviadas",
                 data: allCategories
             })
         } catch (error) {
