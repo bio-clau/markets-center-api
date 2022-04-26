@@ -1,12 +1,19 @@
-PUT http://localhost:4000/api/private/cart/62637ff66cc38964e19c79db
+PUT http://localhost:4000/api/private/cart
 Content-Type: application/json
 
 {
+    "idUser": "62671fb086718c3f6e6214ac",
     "products":[
-        {"productId":"6262f1843d7b11c0d34bdd10", "quantity": 1},
-        {"productId":"625e19889e864286771b0ba4", "quantity": 1}],
-    "amount": 2800
+        {"productId":"6266c0f023eda86e0981c723", "quantity": 1},
+        {"productId":"6266bf8b23eda86e0981c711", "quantity": 1}],
+    "amount": 10
 }
 
 ###
-PUT http://localhost:4000/api/private/emptyCart/62637ff66cc38964e19c79db
+PUT http://localhost:4000/api/private/emptyCart
+Content-Type: application/json
+
+{
+    "idUser": "62671fb086718c3f6e6214ac",
+    "idOrder":"626721020fd4ea9eff96f1ea"
+}

@@ -16,11 +16,11 @@ router.post('/product/:id/review/add', createReview)
 router.post('/addOrder', addOrder);
 router.get('/sendOrder/:id', sendOrder)
 router.get('/orderSellers/:id', orderSellers)
-router.put('/update/:id', updateOrder)
+router.put('/updateOrder', updateOrder)
 
 //cart
-router.put('/cart/:id', getCart)
-router.put('/emptyCart/:id', emptyCart)
+router.put('/cart', getCart)
+router.put('/emptyCart', emptyCart)
 
 //users
 router.post('/users/add', userController.add);

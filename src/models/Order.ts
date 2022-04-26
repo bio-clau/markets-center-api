@@ -33,7 +33,7 @@ const orderSchema = new Schema<IOrder>({
     },
     status: {
         type: String,
-        enum: ['Pending', 'Rejected', 'In process', 'Approved'],
+        enum: ['Pending', 'Rejected', 'In process', 'Approved', 'Dispatched'],
         default: 'Pending'
     }
 },

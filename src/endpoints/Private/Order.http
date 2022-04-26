@@ -2,13 +2,17 @@ POST http://localhost:4000/api/private/addOrder
 Content-Type: application/json
 
 {
-    "userId": "6256d71a93b21a9d5a4bec78",
-    "products":[
-        {"productId":"6262f1843d7b11c0d34bdd10", "quantity": 1}],
-    "amount": 2800,
-    "address":"fasfafdfasf",
-    "status":"Pending"
+    "idUser": "62671fb086718c3f6e6214ac"
 }
 
 ###
-GET http://localhost:4000/api/private/orderSellers/625d8b720f463e93d6644c6e
+GET http://localhost:4000/api/private/orderSellers/62671fb086718c3f6e6214ac
+
+###
+PUT http://localhost:4000/api/private/updateOrder
+Content-Type: application/json
+
+{
+    "idOrder": "626712c6873d9faca8b19e9a",
+    "status":"Rejected"
+}
