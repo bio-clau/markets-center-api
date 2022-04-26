@@ -33,12 +33,18 @@ const productController = {
         try {
             newProduct.save(async (err: Object, product: Object) => {
                 if (err) return next(new ErrorResponse("Complete todos los campos", 400));
-                const allProducts = await Product.find();
+                const productCat = await Product.find().populate({ path: 'category', select: "name" });
+                const user = await User.find({ userId: userID })
+                if (!user) {
+                    return next(new ErrorResponse("El producto no existe", 404))
+                }
+                let result = productCat.filter((product: any) => `${product.userId}` === userID);
+
                 if (product) {
                     res.status(201).json({
                         success: true,
                         msg: "Producto agregado correctamente",
-                        data: allProducts
+                        data: result
                     });
                 }
             });
@@ -50,7 +56,7 @@ const productController = {
     //@route PUT /api/private/product/id
     //access private
     update: async (req: Request, res: Response, next: NextFunction) => {
-        const { name, description, image, stock, category, price } = req.body;
+        const { name, description, image, stock, category, price, userId } = req.body;
         const product = await Product.findById(req.params.id);
         let img = image
         if (image.length > 0 && image !== product.image) {
@@ -70,7 +76,7 @@ const productController = {
                     category,
                     price
                 }
-            }, { new: true, runValidators: true }, (err: Object, product: Object) => {
+            }, { new: true, runValidators: true }, async (err: Object, product: Object) => {
                 if (err) return next(new ErrorResponse("No se encontró el ID", 404))
                 if (product) {
                     res.json({
