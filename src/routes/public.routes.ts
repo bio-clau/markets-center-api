@@ -10,6 +10,7 @@ router.get('/products', all);
 router.get('/product/:id', product);
 router.delete('/product/:id', deleteProduct);
 
+
 /* Categories */
 router.get('/categories', allCategories);
 

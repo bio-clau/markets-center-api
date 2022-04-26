@@ -6,6 +6,9 @@ const Order = require('../../models/Order');
 const User = require("../../models/User");
 const Product = require('../../models/Product')
 const Cart = require('../../models/Cart.ts');
+const Stripe = require('stripe')
+const { STRIPE_API_KEY } = process.env
+const stripe = new Stripe(STRIPE_API_KEY)
 
 const orderControllers = {
     addOrder: async (req: Request, res: Response, next: NextFunction) => {
@@ -51,12 +54,12 @@ const orderControllers = {
             if (Object.keys(orderId).length > 0) {
                 res.json({
                     success: true,
-                    msg: 'The order were founded',
+                    msg: 'Orden encontrada',
                     data: orderId
                 })
             }
             else {
-                return next(new ErrorResponse("That order isn't exist", 404))
+                return next(new ErrorResponse("La orden no existe", 404))
             }
         } catch (error) {
             next(error);
@@ -172,6 +175,26 @@ const orderControllers = {
             }
         } catch (error) {
             next(error);
+        }
+    },
+    payment: async(req: Request, res: Response, next: NextFunction) => {
+        try {
+            const { id, amount } = req.body
+            const payment = await stripe.paymentIntents.create({
+                amount: amount,
+                currency: "USD",
+                payment_method: id,
+                confirm: true
+            })
+
+            res.json({
+                success: true,
+                msg: "El pago fue exitoso",
+                data: payment
+            });
+        } catch (error) {
+            console.log(error)
+            next(error)
         }
     }
 }

@@ -16,7 +16,7 @@ const productController = {
         if (image.length > 0) {
             const result = await cloudinary.uploader.upload(image);
             if (!result) {
-                return res.status(503).json('Upload failed');
+                return res.status(503).json('Falló carga de imágen');
             }
             img = result.url
         }
@@ -31,13 +31,20 @@ const productController = {
             userId: userID
         });
         try {
-            newProduct.save((err: Object, product: Object) => {
+            newProduct.save(async (err: Object, product: Object) => {
                 if (err) return next(new ErrorResponse("Complete todos los campos", 400));
+                const productCat = await Product.find().populate({ path: 'category', select: "name" });
+                const user = await User.find({ userId: userID })
+                if (!user) {
+                    return next(new ErrorResponse("El producto no existe", 404))
+                }
+                let result = productCat.filter((product: any) => `${product.userId}` === userID);
+
                 if (product) {
                     res.status(201).json({
                         success: true,
                         msg: "Producto agregado correctamente",
-                        data: product
+                        data: result
                     });
                 }
             });
@@ -49,13 +56,13 @@ const productController = {
     //@route PUT /api/private/product/id
     //access private
     update: async (req: Request, res: Response, next: NextFunction) => {
-        const { name, description, image, stock, category, price } = req.body;
+        const { name, description, image, stock, category, price, userId } = req.body;
         const product = await Product.findById(req.params.id);
         let img = image
         if (image.length > 0 && image !== product.image) {
             const result = await cloudinary.uploader.upload(image);
             if (!result) {
-                return res.status(503).json('Upload failed');
+                return res.status(503).json('Falló carga de imagen');
             }
             img = result.url
         }
@@ -69,8 +76,8 @@ const productController = {
                     category,
                     price
                 }
-            }, { new: true, runValidators: true }, (err: Object, product: Object) => {
-                if (err) return next(new ErrorResponse("Id not found", 404))
+            }, { new: true, runValidators: true }, async (err: Object, product: Object) => {
+                if (err) return next(new ErrorResponse("No se encontró el ID", 404))
                 if (product) {
                     res.json({
                         success: true,
@@ -135,51 +142,50 @@ const productController = {
     //@route DELETE /api/private/product/:id
     //access private
     deleteProduct: async (req: Request, res: Response, next: NextFunction) => {
-
         const { id } = req.params;
         try {
-            Product.findByIdAndDelete(id, (err: Object, productDeleted: Object) => {
-                if (err) next(new ErrorResponse("El producto no existe", 404));
-                else {
-                    res.json({
-                        success: true,
-                        msg: "El producto fue eliminado con éxito",
-                        data: []
-                    });
-                }
+            const productDelete = await Product.findById(id);
+            if (!productDelete) return next(new ErrorResponse("El producto no existe", 404));
+            await Product.findByIdAndDelete(id);
+            const products = await Product.find();
+            res.json({
+                success: true,
+                msg: "El producto fue eliminado exitosamente",
+                data: products
             });
         } catch (error) {
             next(error)
         }
     },
     createReview: async (req: Request, res: Response, next: NextFunction) => {
-        const { rating, comment } = req.body;
+        const { rating, comment, user } = req.body;
         const product = await Product.findById(req.params.id);
-        const user = await User.find();
-
+        const userFind = await User.findById(user);
         if (product) {
             //already reviewed for user
             const alreadyReviewed = product.reviews.find(
-                (r: any) => r.user === user._id
+                (r: any) => r.user === userFind._id
             )
             if (alreadyReviewed) {
                 return next(new ErrorResponse("Ya has calificado este producto", 400));
             }
 
             product.reviews.push({
+                product: req.params.id,
+                user,
                 rating,
-                comment,
-                user: user._id
+                comment
             });
 
             product.numReviews = product.reviews.length;
 
             product.rating = product.reviews.reduce((acc: any, item: any) => item.rating + acc, 0) / product.numReviews;
             await product.save();
+            const allProducts = await Product.find().populate({ path: 'category', select: "name" });
             res.json({
                 success: true,
                 msg: "Calificación agregada correctamente",
-                data: product
+                data: allProducts
             });
         } else {
             next(new ErrorResponse("El producto no existe", 404));

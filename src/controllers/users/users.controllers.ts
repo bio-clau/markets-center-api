@@ -3,6 +3,10 @@ const sendMail = require('../../config/sendMail')
 import {bienvenidaMail} from '../../mail/bienvenida'
 const ErrorResponse = require("../../helpers/errorConstructor");
 const {cloudinary} = require('../../config/cloudinary')
+
+const { STRIPE_API_KEY } = process.env
+const stripe = require('stripe')(STRIPE_API_KEY);
+
 const Cart = require('../../models/Cart');
 const User = require("../../models/User");
 const Order = require("../../models/Order")
@@ -32,7 +36,7 @@ const userController = {
       if(uploadImg){
         const result = await cloudinary.uploader.upload(image);
         if (!result) {
-          return res.status(503).json('Upload failed');
+          return res.status(503).json('Falló la carga de la imagen');
         }
         img=result.url
       } else {
@@ -51,6 +55,23 @@ const userController = {
         delivery,
       });
       await user.save();
+
+      if(isSeller){
+        const account = await stripe.accounts.create({
+          type: 'custom',
+          country: 'US',
+          email: email,
+          business_type: 'individual',
+          id: userId,
+          first_name: name,
+          phone: phone,
+          capabilities: {
+            card_payments: {requested: true},
+            transfers: {requested: true},
+          },
+          
+        });
+      }
       const texto = bienvenidaMail(user.name)
       const msg = {
         to: user.email,
@@ -66,7 +87,7 @@ const userController = {
       res.status(201).json({
         success: true,
         message: "Usuario ingresado satisfactoriamente",
-        data: [],
+        data: newUser,
       });
     } catch (error) {
       next(error);
@@ -77,8 +98,8 @@ const userController = {
     try {
       const {
         name,
-        picture,
-        user_id,
+        image,
+        userId,
         email,
         isSeller,
         phone,
@@ -89,21 +110,21 @@ const userController = {
         uploadImg
       } = req.body;
       let img= ''
-      const user = await User.findOne({ userId: user_id });
+      const user = await User.findOne({ userId: userId });
       if (!user) {
         return next(new ErrorResponse("No se encontro el usuario", 404));
       }
       if(uploadImg){
-        const result = await cloudinary.uploader.upload(picture);
+        const result = await cloudinary.uploader.upload(image);
         if (!result) {
-          return res.status(503).json('Upload failed');
+          return res.status(503).json('Falló la carga de la imagen');
         }
         img=result.url
       } else {
-        img=picture
+        img=image
       }
       const userUpdated = await User.findOneAndUpdate(
-        { userId: user_id },
+        { userId: userId },
         {
           name,
           image: img,
