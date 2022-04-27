@@ -11,7 +11,7 @@ const sendMail = (options: any) => {
         }
     });
     const mailOptions = {
-        from: process.env.EMAIL_FROM,
+        from: `"Team Markets Center" <${process.env.EMAIL_FROM}>`,
         to: options.to,
         subject: options.subject,
         html: options.text

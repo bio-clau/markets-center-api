@@ -137,7 +137,7 @@ const adminController = {
             const texto = blockPassMail(user.name, direccion)
             const msg = {
                 to: user.email,
-                subject: 'Restablecer contraseña',
+                subject: 'Restablecer contraseña de Markets Center',
                 text: texto,
               }
               await sendMail(msg)
