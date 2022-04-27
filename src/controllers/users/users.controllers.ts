@@ -175,7 +175,7 @@ const userController = {
         return next(new ErrorResponse("El ID no es válido", 400))
       }
       const orders = await Order.find({userId:id}).populate('products.productId')
-      if(!orders.length){
+      if(orders.length<1){
         return next(new ErrorResponse("El historial esta vacío", 404))
       }
       res.status(200).json({
