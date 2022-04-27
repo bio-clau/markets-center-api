@@ -69,8 +69,8 @@ const filtersControllers = {
     filterByStatus: async(req: Request, res: Response, next: NextFunction) => {
         const { status } = req.query
         try {
-            if(status === 'Approved') {
-                Order.find({status: 'Approved'},(error: Object, order: Object) => {
+            if(status === 'Aprovada') {
+                Order.find({status: 'Aprovada'},(error: Object, order: Object) => {
                     if (error) return next(new ErrorResponse("No existen ordenes con ese status", 404));
                     else {
                         return res.json({
@@ -81,8 +81,8 @@ const filtersControllers = {
                     }
                 }).populate([{path: 'products.productId'},{ path: 'userId' }]);
             }
-            else if(status === 'Pending') {
-                Order.find({status: 'Pending'},(error: Object, order: Object) => {
+            else if(status === 'Pendiente') {
+                Order.find({status: 'Pendiente'},(error: Object, order: Object) => {
                     if (error) return next(new ErrorResponse("No existen ordenes con ese status", 404));
                     else {
                         return res.json({
@@ -93,8 +93,8 @@ const filtersControllers = {
                     }
                 }).populate([{path: 'products.productId'},{ path: 'userId' }]);
             }
-            else if(status === 'Rejected') {
-                Order.find({status: 'Rejected'},(error: Object, order: Object) => {
+            else if(status === 'Rechazada') {
+                Order.find({status: 'Rechazada'},(error: Object, order: Object) => {
                     if (error) return next(new ErrorResponse("No existen ordenes con ese status", 404));
                     else {
                         return res.json({
@@ -105,8 +105,8 @@ const filtersControllers = {
                     }
                 }).populate([{path: 'products.productId'},{ path: 'userId' }]);
             }
-            else if(status === 'In process') {
-                Order.find({status: 'In process'},(error: Object, order: Object) => {
+            else if(status === 'En proceso') {
+                Order.find({status: 'En proceso'},(error: Object, order: Object) => {
                     if (error) return next(new ErrorResponse("No existen ordenes con ese status", 404));
                     else {
                         return res.json({

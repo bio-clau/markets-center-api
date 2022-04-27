@@ -6,6 +6,7 @@ interface IOrder {
     amount:number;
     address:string;
     status:string;
+    purchased:[];
 }
 const orderSchema = new Schema<IOrder>({
     userId: {
@@ -24,6 +25,38 @@ const orderSchema = new Schema<IOrder>({
             default: 1
         }
     }],
+    purchased: [{
+        product: {
+            name: {
+                type: String,
+                required: [true, "name is required"],
+            },
+            description: {
+                type: String,
+                required: [true, "description is required"]
+            },
+            image: {
+                type: String,
+                required: [true, "image is required"]
+            },
+            category: [{
+                type: String,
+                required: [true, "category is required"]
+            }],
+            price: {
+                type: Number,
+                required: [true, "price is required"]
+            },
+            userId: {
+                type: Schema.Types.ObjectId,
+                ref: "User"
+            }
+        },
+        quantity: {
+            type: Number,
+            default: 0
+        }
+    }],
     amount: {
         type: Number,
         required: [true, 'El monto es requerido.']
@@ -33,8 +66,8 @@ const orderSchema = new Schema<IOrder>({
     },
     status: {
         type: String,
-        enum: ['Pending', 'Rejected', 'In process', 'Approved', 'Dispatched'],
-        default: 'Pending'
+        enum: ['Pendiente', 'Rechazada', 'En proceso', 'Aprovada', 'Despachada'],
+        default: 'Pendiente'
     }
 },
 {timestamps: true});

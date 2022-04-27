@@ -55,7 +55,7 @@ const cartController = {
                 const userCart = await Cart.findOne({ userId: idUser }).populate('userId').exec();
                 const order = await Order.findById(idOrder).populate([{ path: 'products.productId' }, { path: 'userId' }]);
                 if (userCart && order) {
-                    if (order.status === 'Pending') {
+                    if (order.status === 'Pendiente') {
                         let allOk = false;
                         let arrOrder = order.products;
                         for await (const element of arrOrder) {
@@ -72,7 +72,7 @@ const cartController = {
                         if (allOk) {
                             await Order.findByIdAndUpdate(idOrder, {
                                 $set: {
-                                    status: 'In process'
+                                    status: 'En proceso'
                                 }
                             });
                             Cart.findByIdAndUpdate(userCart._id, {

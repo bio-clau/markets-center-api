@@ -1,6 +1,8 @@
 import { Response, Request, NextFunction } from "express";
 const ErrorResponse = require("../../helpers/errorConstructor");
+import { despachoMail } from '../../mail/despacho'
 import { checkoutMail } from '../../mail/checkout'
+import { rechazadaMail } from '../../mail/rechazada'
 const sendMail = require('../../config/sendMail');
 const Order = require('../../models/Order');
 const User = require("../../models/User");
@@ -15,14 +17,29 @@ const orderControllers = {
         const { idUser } = req.body
         try {
             if (idUser) {
-                const userCart = await Cart.findOne({ userId: idUser }).populate('userId').exec();
+                const userCart = await Cart.findOne({ userId: idUser }).populate([{ path: 'userId' },{ path: 'products.productId' },{ path: 'products.productId.category' }]).exec();
+                let purchasedProducts: { product: { name: string; description: string; image: string; price: number; userId: any; }; quantity: number; }[] = [];
+                userCart.products.map((element: any) => {
+                    let product = {
+                        product: {
+                            name: element.productId.name,
+                            description: element.productId.description,
+                            image: element.productId.image,
+                            price: element.productId.price,
+                            userId: element.productId.userId
+                        },
+                        quantity: element.quantity
+                    }
+                    purchasedProducts.push(product);
+                })
                 if (userCart) {
                     const order = new Order({
                         userId: idUser,
                         products: userCart.products,
+                        purchased: purchasedProducts,
                         amount: userCart.amount,
                         address: userCart.userId.address,
-                        status: "Pending"
+                        status: "Pendiente"
                     });
                     order.save((error: Object, order: Object) => {
                         if (error) return next(new ErrorResponse("All parameters are required", 404));
@@ -74,64 +91,64 @@ const orderControllers = {
                 if (!order) {
                     return next(new ErrorResponse("La orden no existe", 404))
                 }
-                if (order.status === 'In process' && status === 'Approved') {
-                    const orderApproved = await Order.findByIdAndUpdate(idOrder, { $set: { status: 'Approved' } })
-                    const texto = await checkoutMail(order)
+                if (order.status === 'En proceso' && status === 'Aprovada') {
+                    const orderAprovada = await Order.findByIdAndUpdate(idOrder, { $set: { status: 'Aprovada' } })
+                    const texto = checkoutMail(order)
                     const msg = {
                         to: order.userId.email,
                         subject: 'Gracias por su compra en Markets Center!',
                         text: texto
                     };
                     await sendMail(msg);
-                    
+
                     return res.json({
                         success: true,
-                        msg: 'La orden fue actualizada a Approved',
-                        data: orderApproved
+                        msg: 'La orden fue actualizada a Aprovada',
+                        data: orderAprovada
                     })
                 }
-                else if (order.status === 'In process' && status === 'Rejected') {
+                else if (order.status === 'En proceso' && status === 'Rechazada') {
                     let arrOrder = order.products
                     for await (const element of arrOrder) {
                         let stock = element.quantity
-                        let product = await Product.findById(`${element.productId}`).exec();
+                        let product = await Product.findById(element.productId).exec();
                         let updateStock = {
                             "stock": product.stock + stock,
                         }
-                        await Product.findByIdAndUpdate(`${element.productId}`, { $set: updateStock });
+                        await Product.findByIdAndUpdate(element.productId, { $set: updateStock });
                     };
-                    
-                    const orderRejected = await Order.findByIdAndUpdate(idOrder, { $set: { status: 'Rejected' } });
 
-                    //const texto = await checkoutMail(order) Cambiar por Rechazada
-                    // const msg = {
-                    //     to: order.userId.email,
-                    //     subject: 'Gracias por su compra en Markets Center!',
-                    //     text: texto
-                    // };
-                    // await sendMail(msg);
+                    const orderRechazada = await Order.findByIdAndUpdate(idOrder, { $set: { status: 'Rechazada' } });
+
+                    const texto = rechazadaMail(order.userId.name)
+                    const msg = {
+                        to: order.userId.email,
+                        subject: 'Hubo un problema con el pago',
+                        text: texto
+                    };
+                    await sendMail(msg);
 
                     return res.json({
                         success: true,
-                        msg: 'La orden fue actualizada a Rejected',
-                        data: orderRejected
+                        msg: 'La orden fue actualizada a Rechazada',
+                        data: orderRechazada
                     })
                 }
-                else if (order.status === 'Approved' && status === 'Dispatched') {
-                    const orderDispatched = await Order.findByIdAndUpdate(idOrder, { $set: { status: 'Dispatched' } });
+                else if (order.status === 'Aprovada' && status === 'Despachada') {
+                    const orderDespachada = await Order.findByIdAndUpdate(idOrder, { $set: { status: 'Despachada' } });
 
-                    // const texto = await checkoutMail(order) Cambiar por despachada
-                    // const msg = {
-                    //     to: order.userId.email,
-                    //     subject: 'Gracias por su compra en Markets Center!',
-                    //     text: texto
-                    // };
-                    // await sendMail(msg);
+                    const texto = despachoMail(order.userId.name)
+                    const msg = {
+                        to: order.userId.email,
+                        subject: 'Tu orden fue despachada!',
+                        text: texto
+                    };
+                    await sendMail(msg);
 
                     return res.json({
                         success: true,
-                        msg: 'La orden fue actualizada a Dispatched',
-                        data: orderDispatched
+                        msg: 'La orden fue actualizada a Despachada',
+                        data: orderDespachada
                     })
                 }
                 else {
@@ -177,7 +194,7 @@ const orderControllers = {
             next(error);
         }
     },
-    payment: async(req: Request, res: Response, next: NextFunction) => {
+    payment: async (req: Request, res: Response, next: NextFunction) => {
         try {
             const { id, amount } = req.body
             const payment = await stripe.paymentIntents.create({
