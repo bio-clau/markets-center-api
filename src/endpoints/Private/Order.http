@@ -13,6 +13,6 @@ PUT http://localhost:4000/api/private/updateOrder
 Content-Type: application/json
 
 {
-    "idOrder": "626712c6873d9faca8b19e9a",
-    "status":"Rejected"
+    "idOrder": "62681023ec90d13d5f9246d2",
+    "status": "Approved"
 }

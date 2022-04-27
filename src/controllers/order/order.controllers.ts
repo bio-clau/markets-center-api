@@ -1,6 +1,8 @@
 import { Response, Request, NextFunction } from "express";
 const ErrorResponse = require("../../helpers/errorConstructor");
+import { despachoMail } from '../../mail/despacho'
 import { checkoutMail } from '../../mail/checkout'
+import { rechazadaMail } from '../../mail/rechazada'
 const sendMail = require('../../config/sendMail');
 const Order = require('../../models/Order');
 const User = require("../../models/User");
@@ -76,7 +78,7 @@ const orderControllers = {
                 }
                 if (order.status === 'In process' && status === 'Approved') {
                     const orderApproved = await Order.findByIdAndUpdate(idOrder, { $set: { status: 'Approved' } })
-                    const texto = await checkoutMail(order)
+                    const texto = checkoutMail(order)
                     const msg = {
                         to: order.userId.email,
                         subject: 'Gracias por su compra en Markets Center!',
@@ -94,22 +96,22 @@ const orderControllers = {
                     let arrOrder = order.products
                     for await (const element of arrOrder) {
                         let stock = element.quantity
-                        let product = await Product.findById(`${element.productId}`).exec();
+                        let product = await Product.findById(element.productId).exec();
                         let updateStock = {
                             "stock": product.stock + stock,
                         }
-                        await Product.findByIdAndUpdate(`${element.productId}`, { $set: updateStock });
+                        await Product.findByIdAndUpdate(element.productId, { $set: updateStock });
                     };
                     
                     const orderRejected = await Order.findByIdAndUpdate(idOrder, { $set: { status: 'Rejected' } });
 
-                    //const texto = await checkoutMail(order) Cambiar por Rechazada
-                    // const msg = {
-                    //     to: order.userId.email,
-                    //     subject: 'Gracias por su compra en Markets Center!',
-                    //     text: texto
-                    // };
-                    // await sendMail(msg);
+                    const texto = rechazadaMail(order.userId.name)
+                    const msg = {
+                        to: order.userId.email,
+                        subject: 'Hubo un problema con el pago',
+                        text: texto
+                    };
+                    await sendMail(msg);
 
                     return res.json({
                         success: true,
@@ -120,13 +122,13 @@ const orderControllers = {
                 else if (order.status === 'Approved' && status === 'Dispatched') {
                     const orderDispatched = await Order.findByIdAndUpdate(idOrder, { $set: { status: 'Dispatched' } });
 
-                    // const texto = await checkoutMail(order) Cambiar por despachada
-                    // const msg = {
-                    //     to: order.userId.email,
-                    //     subject: 'Gracias por su compra en Markets Center!',
-                    //     text: texto
-                    // };
-                    // await sendMail(msg);
+                    const texto = despachoMail(order.userId.name)
+                    const msg = {
+                        to: order.userId.email,
+                        subject: 'Tu orden fue despachada!',
+                        text: texto
+                    };
+                    await sendMail(msg);
 
                     return res.json({
                         success: true,
