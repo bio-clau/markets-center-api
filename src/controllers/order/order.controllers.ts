@@ -17,14 +17,29 @@ const orderControllers = {
         const { idUser } = req.body
         try {
             if (idUser) {
-                const userCart = await Cart.findOne({ userId: idUser }).populate('userId').exec();
+                const userCart = await Cart.findOne({ userId: idUser }).populate([{ path: 'userId' },{ path: 'products.productId' },{ path: 'products.productId.category' }]).exec();
+                let purchasedProducts: { product: { name: string; description: string; image: string; price: number; userId: any; }; quantity: number; }[] = [];
+                userCart.products.map((element: any) => {
+                    let product = {
+                        product: {
+                            name: element.productId.name,
+                            description: element.productId.description,
+                            image: element.productId.image,
+                            price: element.productId.price,
+                            userId: element.productId.userId
+                        },
+                        quantity: element.quantity
+                    }
+                    purchasedProducts.push(product);
+                })
                 if (userCart) {
                     const order = new Order({
                         userId: idUser,
                         products: userCart.products,
+                        purchased: purchasedProducts,
                         amount: userCart.amount,
                         address: userCart.userId.address,
-                        status: "Pending"
+                        status: "Pendiente"
                     });
                     order.save((error: Object, order: Object) => {
                         if (error) return next(new ErrorResponse("All parameters are required", 404));
@@ -76,8 +91,8 @@ const orderControllers = {
                 if (!order) {
                     return next(new ErrorResponse("La orden no existe", 404))
                 }
-                if (order.status === 'In process' && status === 'Approved') {
-                    const orderApproved = await Order.findByIdAndUpdate(idOrder, { $set: { status: 'Approved' } })
+                if (order.status === 'En proceso' && status === 'Aprovada') {
+                    const orderAprovada = await Order.findByIdAndUpdate(idOrder, { $set: { status: 'Aprovada' } })
                     const texto = checkoutMail(order)
                     const msg = {
                         to: order.userId.email,
@@ -85,14 +100,14 @@ const orderControllers = {
                         text: texto
                     };
                     await sendMail(msg);
-                    
+
                     return res.json({
                         success: true,
-                        msg: 'La orden fue actualizada a Approved',
-                        data: orderApproved
+                        msg: 'La orden fue actualizada a Aprovada',
+                        data: orderAprovada
                     })
                 }
-                else if (order.status === 'In process' && status === 'Rejected') {
+                else if (order.status === 'En proceso' && status === 'Rechazada') {
                     let arrOrder = order.products
                     for await (const element of arrOrder) {
                         let stock = element.quantity
@@ -102,8 +117,8 @@ const orderControllers = {
                         }
                         await Product.findByIdAndUpdate(element.productId, { $set: updateStock });
                     };
-                    
-                    const orderRejected = await Order.findByIdAndUpdate(idOrder, { $set: { status: 'Rejected' } });
+
+                    const orderRechazada = await Order.findByIdAndUpdate(idOrder, { $set: { status: 'Rechazada' } });
 
                     const texto = rechazadaMail(order.userId.name)
                     const msg = {
@@ -115,12 +130,12 @@ const orderControllers = {
 
                     return res.json({
                         success: true,
-                        msg: 'La orden fue actualizada a Rejected',
-                        data: orderRejected
+                        msg: 'La orden fue actualizada a Rechazada',
+                        data: orderRechazada
                     })
                 }
-                else if (order.status === 'Approved' && status === 'Dispatched') {
-                    const orderDispatched = await Order.findByIdAndUpdate(idOrder, { $set: { status: 'Dispatched' } });
+                else if (order.status === 'Aprovada' && status === 'Despachada') {
+                    const orderDespachada = await Order.findByIdAndUpdate(idOrder, { $set: { status: 'Despachada' } });
 
                     const texto = despachoMail(order.userId.name)
                     const msg = {
@@ -132,8 +147,8 @@ const orderControllers = {
 
                     return res.json({
                         success: true,
-                        msg: 'La orden fue actualizada a Dispatched',
-                        data: orderDispatched
+                        msg: 'La orden fue actualizada a Despachada',
+                        data: orderDespachada
                     })
                 }
                 else {
@@ -179,7 +194,7 @@ const orderControllers = {
             next(error);
         }
     },
-    payment: async(req: Request, res: Response, next: NextFunction) => {
+    payment: async (req: Request, res: Response, next: NextFunction) => {
         try {
             const { id, amount } = req.body
             const payment = await stripe.paymentIntents.create({
