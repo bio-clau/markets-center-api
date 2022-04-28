@@ -5,6 +5,7 @@ const ErrorResponse = require("../../helpers/errorConstructor");
 const { cloudinary } = require('../../config/cloudinary');
 const Categories = require('../../models/Categories.ts');
 const User = require('../../models/User');
+const Order = require('../../models/Order')
 // const firebaseAdmin = require('../../config/firebase')
 import {firebaseAdmin} from '../../config/firebase'
 const sendMail = require('../../config/sendMail')
@@ -145,6 +146,22 @@ const adminController = {
             res.status(200).json('okis')
         } catch (err) {
             next(err)
+        }
+    },
+    allOrders: async (req: Request, res: Response, next:NextFunction) => {
+        try {
+            Order.find({}, (error: Object, order: Object) => {
+                if (error) return next(new ErrorResponse("No se encontraron ordenes", 404));
+                if (order) {
+                    res.json({
+                        success: true,
+                        msg: "Se enviaron todas las ordenes existentes",
+                        data: order
+                    });
+                }
+            }).populate([{ path: 'purchased.product.userId' }, { path: 'userId' }]);
+        } catch (error) {
+            next(error)
         }
     }
 }
