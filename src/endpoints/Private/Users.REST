@@ -35,3 +35,6 @@ Content-Type: application/json
 
 ### get de todos los vendedores
 GET http://localhost:4000/api/private/users/sellers
+
+###
+GET http://localhost:4000/api/private/users/history/62671fb086718c3f6e6214ac

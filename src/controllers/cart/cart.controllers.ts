@@ -1,4 +1,5 @@
 import { NextFunction, Request, Response } from "express";
+const User = require('../../models/User');
 const Cart = require('../../models/Cart.ts');
 const Order = require('../../models/Order')
 const ErrorResponse = require("../../helpers/errorConstructor");
@@ -9,7 +10,8 @@ const cartController = {
         const { idUser, products, amount } = req.body;
         try {
             if (idUser) {
-                const userCart = await Cart.findOne({ userId: idUser }).populate([{ path: 'products.productId' }, { path: 'userId' }]);
+                const iduser = await User.findOne({userId: idUser});
+                const userCart = await Cart.findOne({ userId: iduser._id }).populate([{ path: 'products.productId' }, { path: 'userId' }]);
                 if (userCart) {
                     if (products && amount) {
                         Cart.findByIdAndUpdate(userCart._id, {
@@ -51,8 +53,9 @@ const cartController = {
     emptyCart: async (req: Request, res: Response, next: NextFunction) => {
         const { idUser, idOrder } = req.body;
         try {
-            if (idUser) {
-                const userCart = await Cart.findOne({ userId: idUser }).populate('userId').exec();
+            if (idUser && idOrder) {
+                const iduser = await User.findOne({userId: idUser});
+                const userCart = await Cart.findOne({ userId: iduser._id }).populate('userId').exec();
                 const order = await Order.findById(idOrder).populate([{ path: 'products.productId' }, { path: 'userId' }]);
                 if (userCart && order) {
                     if (order.status === 'Pendiente') {
