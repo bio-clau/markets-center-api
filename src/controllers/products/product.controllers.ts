@@ -162,10 +162,18 @@ const productController = {
         const { rating, comment, user } = req.body;
         const product = await Product.findById(req.params.id);
         try {
+            //search for the products within the purchase order of a product to be able to leave a review
+           /*  let orders = await Order.find({ userId: user })
+
+            let order = orders.filter((order: any) => order.products.filter((product: any) => product.productId._id === req.params.id))
+            if (!order) {
+                return next(new ErrorResponse("No puedes dejar una reseña sobre un producto que no has comprado", 404))
+            } */
             if (!user) return next(new ErrorResponse("Inicia sesión, por favor!", 404))
             if (product) {
                 //already review for user
                 let result = product.reviews.filter((review: any) => `${review.user}` === user);
+
                 if (result.length > 0) {
                     return next(new ErrorResponse("Ya has realizado una reseña", 404))
                 } else {

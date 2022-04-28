@@ -1,0 +1,15 @@
+###GET review for id
+GET http://localhost:4000/api/private/review/6266c0f023eda86e0981c723
+
+###UPDATE review of product
+PUT http://localhost:4000/api/private/review/update/6266bf8b23eda86e0981c711/6266c6e8519c7083001e71ce
+Content-Type: application/json
+
+{
+    "user": "6268a1ed3f9af720f8b8ceea",
+    "rating": 4,
+    "comment": "Muy bueno x2"
+}
+
+###DELETE review of product
+DELETE http://localhost:4000/api/private/review/delete/6266bf8b23eda86e0981c711/6266d975086448f441c90bda
