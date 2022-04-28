@@ -17,7 +17,7 @@ const orderControllers = {
         const { idUser } = req.body
         try {
             if (idUser) {
-                const userCart = await Cart.findOne({ userId: idUser }).populate([{ path: 'userId' },{ path: 'products.productId' },{ path: 'products.productId.category' }]).exec();
+                const userCart = await Cart.findOne({ userId: idUser }).populate([{ path: 'userId' },{ path: 'products.productId' }]).exec();
                 let purchasedProducts: { product: { name: string; description: string; image: string; price: number; userId: any; }; quantity: number; }[] = [];
                 userCart.products.map((element: any) => {
                     let product = {

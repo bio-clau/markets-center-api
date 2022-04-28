@@ -1,4 +1,5 @@
 import { NextFunction, Request, Response } from "express";
+const Order = require("../../models/Order")
 const ErrorResponse = require("../../helpers/errorConstructor");
 const { cloudinary } = require('../../config/cloudinary');
 const User = require('../../models/User');
@@ -56,7 +57,7 @@ const productController = {
     //@route PUT /api/private/product/id
     //access private
     update: async (req: Request, res: Response, next: NextFunction) => {
-        const { name, description, image, stock, category, price, userId } = req.body;
+        const { name, description, image, stock, category, price } = req.body;
         const product = await Product.findById(req.params.id);
         let img = image
         if (image.length > 0 && image !== product.image) {
@@ -160,36 +161,38 @@ const productController = {
     createReview: async (req: Request, res: Response, next: NextFunction) => {
         const { rating, comment, user } = req.body;
         const product = await Product.findById(req.params.id);
-        const userFind = await User.findById(user);
-        if (product) {
-            //already reviewed for user
-            const alreadyReviewed = product.reviews.find(
-                (r: any) => r.user === userFind._id
-            )
-            if (alreadyReviewed) {
-                return next(new ErrorResponse("Ya has calificado este producto", 400));
+        try {
+            if (!user) return next(new ErrorResponse("Inicia sesión, por favor!", 404))
+            if (product) {
+                //already review for user
+                let result = product.reviews.filter((review: any) => `${review.user}` === user);
+                if (result.length > 0) {
+                    return next(new ErrorResponse("Ya has realizado una reseña", 404))
+                } else {
+                    product.reviews.push({
+                        product: req.params.id,
+                        user,
+                        rating,
+                        comment
+                    });
+                    product.numReviews = product.reviews.length;
+
+                    product.rating = product.reviews.reduce((acc: any, item: any) => item.rating + acc, 0) / product.numReviews;
+                    await product.save();
+                    const allProducts = await Product.find().populate({ path: 'category', select: "name" });
+                    res.json({
+                        success: true,
+                        msg: "Calificación agregada correctamente",
+                        data: allProducts
+                    });
+                }
+            } else {
+                next(new ErrorResponse("El producto no existe", 404));
             }
-
-            product.reviews.push({
-                product: req.params.id,
-                user,
-                rating,
-                comment
-            });
-
-            product.numReviews = product.reviews.length;
-
-            product.rating = product.reviews.reduce((acc: any, item: any) => item.rating + acc, 0) / product.numReviews;
-            await product.save();
-            const allProducts = await Product.find().populate({ path: 'category', select: "name" });
-            res.json({
-                success: true,
-                msg: "Calificación agregada correctamente",
-                data: allProducts
-            });
-        } else {
-            next(new ErrorResponse("El producto no existe", 404));
+        } catch (error) {
+            next(error);
         }
+
     }
 }
 
