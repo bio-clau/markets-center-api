@@ -1,9 +1,11 @@
 import { Router } from "express";
+
 const auth = require("../middlewares/auth");
 const { createReview, update, add } = require("../controllers/products/product.controllers");
 const userController = require('../controllers/users/users.controllers');
 const { addOrder, sendOrder, orderSellers, updateOrder, payment } = require('../controllers/order/order.controllers')
-const { getCart, emptyCart} = require('../controllers/cart/cart.controllers')
+const { getCart, emptyCart } = require('../controllers/cart/cart.controllers')
+const { showReviews, updateReview } = require('../controllers/reviews/review.controllers')
 
 const router = Router();
 
@@ -12,6 +14,8 @@ const router = Router();
 router.put('/product/:id', update);
 router.post('/product', add);
 router.post('/product/:id/review/add', createReview)
+
+
 
 router.post('/addOrder', addOrder);
 router.get('/sendOrder/:id', sendOrder)
@@ -31,5 +35,8 @@ router.get('/users/sellers', userController.sellers);
 router.get('/users/history/:id', userController.getHistory);
 router.put('/users/update', userController.update);
 
+//reviews
+router.get('/review/:id', showReviews);
+router.put('/review/update/:id', updateReview);
 
 module.exports = router;

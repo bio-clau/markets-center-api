@@ -12,21 +12,24 @@ interface IProduct {
     rating: number;
     userId: mongoose.Schema.Types.ObjectId;
 }
+
 const ReviewSchema = new mongoose.Schema({
-    user: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "User",
-        default: null
-    },
-    rating: {
-        type: Number,
-        default: 0
-    },
-    comment: {
-        type: String,
-        trim: true
+        user: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "User"
+        },
+        rating: {
+            type: Number,
+            default: 0
+        },
+        comment: {
+            type: String,
+            trim: true
+        }
+    }, {
+        timestamps: true
     }
-})
+)
 
 const ProductSchema = new mongoose.Schema<IProduct>({
     name: {
