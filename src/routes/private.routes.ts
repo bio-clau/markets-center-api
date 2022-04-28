@@ -1,6 +1,7 @@
 import { Router } from "express";
 
-const auth = require("../middlewares/auth");
+const {auth} = require("../middlewares/auth");
+
 const { createReview, update, add } = require("../controllers/products/product.controllers");
 const userController = require('../controllers/users/users.controllers');
 const { addOrder, sendOrder, orderSellers, updateOrder, payment } = require('../controllers/order/order.controllers')
@@ -11,29 +12,28 @@ const router = Router();
 
 //products
 
-router.put('/product/:id', update);
-router.post('/product', add);
-router.post('/product/:id/review/add', createReview)
+router.put('/product/:id', auth, update);
+router.post('/product', auth, add);
+router.post('/product/:id/review/add', auth, createReview)
+
+router.post('/addOrder', auth, addOrder);
+router.get('/sendOrder/:id', auth, sendOrder)
+router.get('/orderSellers/:id', auth, orderSellers)
+router.put('/updateOrder', auth, updateOrder)
 
 
-
-router.post('/addOrder', addOrder);
-router.get('/sendOrder/:id', sendOrder)
-router.get('/orderSellers/:id', orderSellers)
-router.put('/updateOrder', updateOrder)
-
-router.post('/payment', payment)
+router.post('/payment', auth, payment)
 //cart
-router.put('/cart', getCart)
-router.put('/emptyCart', emptyCart)
+router.put('/cart', auth, getCart)
+router.put('/emptyCart', auth, emptyCart)
 
 //users
-router.post('/users/add', userController.add);
+router.post('/users/add',auth, userController.add);
 router.get('/users', userController.getAll);
-router.get('/users/byid/:id', userController.byId);
-router.get('/users/sellers', userController.sellers);
-router.get('/users/history/:id', userController.getHistory);
-router.put('/users/update', userController.update);
+router.get('/users/byid/:id', auth, userController.byId);
+router.get('/users/sellers',  userController.sellers);
+router.get('/users/history/:id', auth, userController.getHistory);
+router.put('/users/update', auth, userController.update);
 
 //reviews
 router.get('/review/:id', showReviews);

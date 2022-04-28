@@ -1,11 +1,11 @@
 import { Request, Response, NextFunction } from "express";
 const ErrorResponse = require('../helpers/errorConstructor')
-const admin = require('../config/firebase')
+const {firebaseAdmin} = require('../config/firebase')
 
 exports.auth = async (req:Request, res:Response, next:NextFunction)=>{
     const token = req.headers.authorization?.split(' ')[1];
     try {
-        const decodeValue = await admin.auth().verifyIdToken(token);
+        const decodeValue = await firebaseAdmin.auth().verifyIdToken(token);
         if(decodeValue){
             (<any>req)['authUser'] = decodeValue;
             return next();
