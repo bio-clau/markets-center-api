@@ -1,0 +1,20 @@
+### 6266c104519c7083001e714c
+PUT http://localhost:4000/api/private/favs
+Content-Type: application/json
+
+{
+    "userId":"FWgVgrPhh9boiula04Oz16ycwRe2",
+    "productId": "6266c0f023eda86e0981c723"
+}
+
+###
+DELETE http://localhost:4000/api/private/favs
+Content-Type: application/json
+
+{
+    "userId": "FWgVgrPhh9boiula04Oz16ycwRe2",
+    "productId": "6266c0f023eda86e0981c723"
+}
+
+###
+GET http://localhost:4000/api/private/favs/FWgVgrPhh9boiula04Oz16ycwRe2
