@@ -7,6 +7,7 @@ const userController = require('../controllers/users/users.controllers');
 const { addOrder, sendOrder, orderSellers, updateOrder, payment } = require('../controllers/order/order.controllers')
 const { getCart, emptyCart } = require('../controllers/cart/cart.controllers')
 const { showReviews, updateReview, deleteReview } = require('../controllers/reviews/review.controllers')
+const favsControllers = require('../controllers/favourites/favourites.controllers')
 
 const router = Router();
 
@@ -37,7 +38,12 @@ router.put('/users/update', auth, userController.update);
 
 //reviews
 router.get('/review/:id', showReviews);
-router.put('/review/update/:id/:reviewId', updateReview);
-router.delete('/review/delete/:id/:reviewId', deleteReview);
+router.put('/review/update/:id/:reviewId', auth, updateReview);
+router.delete('/review/delete/:id/:reviewId', auth, deleteReview);
+
+//favourites
+router.put('/favs', auth, favsControllers.add);
+router.delete('/favs', auth, favsControllers.delete);
+router.get('/favs/:userId', auth, favsControllers.getAll)
 
 module.exports = router;

@@ -82,6 +82,7 @@ const userController = {
       
       const newUser = await User.findOne({userId: userId}).exec();
       const newUserCart = new Cart({userId: newUser._id });
+      //todo agregar favoritos
       await newUserCart.save();
 
       res.status(201).json({
