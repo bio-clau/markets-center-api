@@ -59,6 +59,7 @@ const productController = {
     update: async (req: Request, res: Response, next: NextFunction) => {
         const { name, description, image, stock, category, price } = req.body;
         const product = await Product.findById(req.params.id);
+        const userId = product.userId
         let img = image
         if (image.length > 0 && image !== product.image) {
             const result = await cloudinary.uploader.upload(image);
@@ -79,14 +80,14 @@ const productController = {
                 }
             }, { new: true, runValidators: true }, async (err: Object, product: Object) => {
                 if (err) return next(new ErrorResponse("No se encontró el ID", 404))
-                if (product) {
-                    res.json({
-                        success: true,
-                        msg: "Producto actualizado correctamente",
-                        data: product
-                    });
-                }
+                const todo = await Product.find({userId: userId})
+                res.json({
+                    success: true,
+                    msg: "Producto actualizado correctamente",
+                    data: todo
+                });
             });
+
         } catch (error) {
             next(error);
         }
