@@ -48,10 +48,12 @@ const favsControllers = {
         try {
             const {userId, productId} = req.body;
             const user = await User.findOne({userId: userId});
+            console.log('user')
             if(!user){
                 return next(new ErrorResponse("Usuario Inválido", 400))
             }
             const favs = await Favs.findOne({userId: user._id});
+            console.log('favs')
             if(!favs){
                 return next(new ErrorResponse("No se encontraron favoritos", 404))
             }
@@ -75,12 +77,57 @@ const favsControllers = {
             const {userId} = req.params;
             const user = await User.findOne({userId: userId});
             if(!user) return next(new ErrorResponse("Usuario invalido", 400))
-            const favs = await Favs.findOne({userId: user._id}).populate('favs')
+            const favs = await Favs.findOne({userId: user._id})
             if(!favs) return next(new ErrorResponse("Favoritos no encontrados", 404));
             res.status(200).json({
                 success: true,
                 msg: "Favoritos encontrados",
                 data: favs
+            })
+        } catch (err) {
+            next(err)
+        }
+    },
+    getAllDetail: async (req:Request, res:Response, next:NextFunction)=>{
+        try {
+            const {userId} = req.params;
+            const user = await User.findOne({userId: userId});
+            if(!user) return next(new ErrorResponse("Usuario invalido", 400))
+            const favs = await Favs.findOne({userId: user._id}).populate('favs')
+            if(!favs) return next(new ErrorResponse("Detalle de Favoritos no encontrados", 404));
+            res.status(200).json({
+                success: true,
+                msg: "Detall de Favoritos encontrados",
+                data: favs
+            })
+        } catch (err) {
+            next(err)
+        }
+    },
+    deleteDetail: async (req: Request, res:Response, next:NextFunction)=>{
+        try {
+            const {userId, productId} = req.body;
+            const user = await User.findOne({userId: userId});
+            console.log('user')
+            if(!user){
+                return next(new ErrorResponse("Usuario Inválido", 400))
+            }
+            const favs = await Favs.findOne({userId: user._id});
+            console.log('favs')
+            if(!favs){
+                return next(new ErrorResponse("No se encontraron favoritos", 404))
+            }
+            const newFavs = favs.favs.filter((p: any)=>`${p}`!== productId)
+            console.log(newFavs)
+            const updated = await Favs.findOneAndUpdate({userId: user._id},{
+                favs: newFavs
+            },{new:true})
+            const favsUp = await Favs.findOne({userId: user._id}).populate('favs')
+            if(!updated) return next(new ErrorResponse("No se pudo agregar a favoritos", 304))
+            res.status(201).json({
+                success:true,
+                msg: "Producto eliminado de favoritos",
+                data: favsUp
             })
         } catch (err) {
             next(err)

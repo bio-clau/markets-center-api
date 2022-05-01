@@ -43,7 +43,9 @@ router.delete('/review/delete/:id/:reviewId', auth, deleteReview);
 
 //favourites
 router.put('/favs', auth, favsControllers.add);
-router.delete('/favs', auth, favsControllers.delete);
-router.get('/favs/:userId', auth, favsControllers.getAll)
+router.put('/favs/delete', auth, favsControllers.delete);
+router.put('/favs/delete/detail', auth, favsControllers.deleteDetail);
+router.get('/favs/:userId', auth, favsControllers.getAll);
+router.get('/favs/detail/:userId', auth, favsControllers.getAllDetail);
 
 module.exports = router;
