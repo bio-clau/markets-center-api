@@ -5,6 +5,8 @@ import {Schema, model} from "mongoose";
 interface ICategories {
     name: string;
     image: string;
+    banned: boolean;
+    deleted: boolean;
 }
 
 const categoriesSchema = new Schema<ICategories>({
@@ -22,6 +24,14 @@ const categoriesSchema = new Schema<ICategories>({
         type: String,
         default: 'https://cdn.icon-icons.com/icons2/2406/PNG/512/tags_categories_icon_145927.png',
         required: false
+    },
+    banned: {
+        type: Boolean,
+        default: false
+    },
+    deleted: {
+        type: Boolean,
+        default: false
     }
 },
     {

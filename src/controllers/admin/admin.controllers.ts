@@ -44,9 +44,9 @@ const adminController = {
             if (idCategory) {
                 const category = await Categories.findById(idCategory);
                 if (!category) return next(new ErrorResponse("La categoria no existe", 404));
-                if (category.disabled) return next(new ErrorResponse("La categoria ya se encuentra deshabilitada", 404));
+                if (category.banned) return next(new ErrorResponse("La categoria ya se encuentra deshabilitada", 404));
                 if (category.deleted) return next(new ErrorResponse("La categoria se encuentra eliminada", 404))
-                Categories.findByIdAndUpdate(idCategory, { disabled: true }, { new: true, runValidators: true }, async (error: Object, category: Object) => {
+                Categories.findByIdAndUpdate(idCategory, { banned: true }, { new: true, runValidators: true }, async (error: Object, category: Object) => {
                     if (error) return next(new ErrorResponse("No se encontro la categoria", 404));
                     if (category) {
                         const categories = await Categories.find({ deleted: false });
@@ -71,9 +71,9 @@ const adminController = {
             if (idCategory) {
                 const category = await Categories.findById(idCategory);
                 if (!category) return next(new ErrorResponse("La categoria no existe", 404));
-                if (!category.disabled) return next(new ErrorResponse("La categoria ya se encuentra habilitada", 404))
+                if (!category.banned) return next(new ErrorResponse("La categoria ya se encuentra habilitada", 404))
                 if (category.deleted) return next(new ErrorResponse("La categoria se encuentra eliminada", 404))
-                Categories.findByIdAndUpdate(idCategory, { disabled: false }, { new: true, runValidators: true }, async (error: Object, category: Object) => {
+                Categories.findByIdAndUpdate(idCategory, { banned: false }, { new: true, runValidators: true }, async (error: Object, category: Object) => {
                     if (error) return next(new ErrorResponse("No se encontro la categoria", 404));
                     if (category) {
                         const categories = await Categories.find({ deleted: false });
@@ -109,7 +109,7 @@ const adminController = {
                 return next(new ErrorResponse("La categoría no fue encontrada", 404))
             }
             if (cat.deleted) return next(new ErrorResponse("La categoria se encuentra eliminada", 404));
-            if (cat.disabled) return next(new ErrorResponse("La categoria ya se encuentra deshabilitada", 404));
+            if (cat.banned) return next(new ErrorResponse("La categoria ya se encuentra deshabilitada", 404));
             const newCategory = await Categories.findByIdAndUpdate(id, {
                 name,
                 image: img
@@ -185,7 +185,7 @@ const adminController = {
                 return next(new ErrorResponse("No se encontro el usuario", 404));
             }
             if (user.deleted) return next(new ErrorResponse("El usuario se encuentra eliminado", 404))
-            if (user.disabled) return next(new ErrorResponse("El usuario se encuentra deshabilitado", 404))
+            if (user.banned) return next(new ErrorResponse("El usuario se encuentra deshabilitado", 404))
             await User.findByIdAndUpdate(id, {
                 isAdmin: true,
                 isSeller: false
@@ -208,7 +208,7 @@ const adminController = {
                 return next(new ErrorResponse("No se encontró el usuario", 400))
             }
             if (user.deleted) return next(new ErrorResponse("El usuario se encuentra eliminado", 404))
-            if (user.disabled) return next(new ErrorResponse("El usuario se encuentra deshabilitado", 404))
+            if (user.banned) return next(new ErrorResponse("El usuario se encuentra deshabilitado", 404))
             const firebaseUser = await firebaseAdmin.auth().updateUser(id, { password: 'kf38956ytuv9g48506tuy9r' })
             const actionCodeSettings = {
                 url: 'https://markets-center.vercel.app/login',
@@ -238,7 +238,7 @@ const adminController = {
                     orders.map((order: any, index: number) => {
                         let vendedores: any[] = [];
                         order.products.map((vendedor: any) =>  {
-                            !vendedores.includes(vendedor.productId.userId.name) && vendedores.push(vendedor.productId.userId.name);
+                            vendedor.productId !== null && !vendedores.includes(vendedor.productId.userId.name) && vendedores.push(vendedor.productId.userId.name);
                         })
                         let vendedoresString = vendedores.join(' - ');
                         let fecha = `${order.createdAt}`.slice(0, 15);
@@ -266,13 +266,13 @@ const adminController = {
     },
     banned: async (req: Request, res: Response, next: NextFunction) => {
         const { id } = req.params
-        let { reason, disabled } = req.body
+        let { reason, banned } = req.body
         try {
-            if (id && disabled) {
+            if (id && banned) {
                 const user = await User.findById(id);
-                if (user.disabled) return next(new ErrorResponse("El usuario ya se encuentra deshabilitado", 404));
+                if (user.banned) return next(new ErrorResponse("El usuario ya se encuentra deshabilitado", 404));
                 if (user.deleted) return next(new ErrorResponse("El usuario se encuentra eliminado", 404));
-                User.findByIdAndUpdate(id, { disabled: true }, { new: true, runValidators: true }, async (error: Object, userBanned: Object) => {
+                User.findByIdAndUpdate(id, { banned: true }, { new: true, runValidators: true }, async (error: Object, userBanned: Object) => {
                     if (error) return next(new ErrorResponse("No se encontro el usuario", 404));
                     if (userBanned) {
                         await firebaseAdmin.auth().updateUser(user.userId, { disabled: true })
@@ -291,11 +291,11 @@ const adminController = {
                     };
                 });
             }
-            else if (id && !disabled) {
+            else if (id && !banned) {
                 const user = await User.findById(id);
-                if (!user.disabled) return next(new ErrorResponse("El usuario ya se encuentra habilitado", 404));
+                if (!user.banned) return next(new ErrorResponse("El usuario ya se encuentra habilitado", 404));
                 if (user.deleted) return next(new ErrorResponse("El usuario se encuentra eliminado", 404));
-                User.findByIdAndUpdate(id, { disabled: false }, { new: true, runValidators: true }, async (error: Object, userDesbanned: Object) => {
+                User.findByIdAndUpdate(id, { banned: false }, { new: true, runValidators: true }, async (error: Object, userDesbanned: Object) => {
                     if (error) return next(new ErrorResponse("No se encontro el usuario", 404));
                     if (userDesbanned) {
                         await firebaseAdmin.auth().updateUser(user.userId, { disabled: false })
@@ -319,6 +319,33 @@ const adminController = {
             }
         } catch (error) {
             next(error);
+        }
+    },
+    allCategory: async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            const allCategories = await Categories.find({deleted: false});
+            res.json({
+                success: true,
+                msg: "Todas las categorías fueron enviadas",
+                data: allCategories
+            })
+        } catch (error) {
+            next(error)
+        }
+    },
+    getAllUsers: async (req: Request, res: Response, next: NextFunction)=>{
+        try {
+            const users = await User.find({deleted: false});
+            if(!users) {
+                return next(new ErrorResponse("No se encontraron usuarios", 404))
+            }
+            res.status(200).json({
+                success: true,
+                msg:"Usuarios encontrados",
+                data: users
+            })
+        } catch (err) {
+            next(err)
         }
     }
 }

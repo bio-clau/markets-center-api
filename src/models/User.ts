@@ -13,6 +13,8 @@ interface IUser {
     address: string;
     reviews: string;
     delivery: boolean;
+    banned: boolean;
+    deleted: boolean;
 }
 
 const UserSchema = new Schema<IUser>({
@@ -76,6 +78,14 @@ const UserSchema = new Schema<IUser>({
         type: Boolean,
         default: false,
         required: false
+    },
+    banned: {
+        type: Boolean,
+        default: false
+    },
+    deleted: {
+        type: Boolean,
+        default: false
     }
 })
 const User = model("User", UserSchema);
