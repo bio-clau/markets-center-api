@@ -169,7 +169,7 @@ const userController = {
   getHistory: async (req:Request, res: Response, next:NextFunction)=>{
     const {id} = req.params;
     try {
-      if(!id) {
+      if(!id || id==='undefined') {
         return next(new ErrorResponse("El ID no es válido", 400));
       }
       if(!await User.findById(id)){
