@@ -11,6 +11,8 @@ interface IProduct {
     numReviews: number;
     rating: number;
     userId: mongoose.Schema.Types.ObjectId;
+    banned: boolean;
+    deleted: boolean;
 }
 
 const ReviewSchema = new mongoose.Schema({
@@ -71,8 +73,15 @@ const ProductSchema = new mongoose.Schema<IProduct>({
         type: Number,
         required: true,
         default: 0,
+    },
+    banned: {
+        type: Boolean,
+        default: false
+    },
+    deleted: {
+        type: Boolean,
+        default: false
     }
-
 }, {
     timestamps: true
 });

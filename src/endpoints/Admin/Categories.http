@@ -16,4 +16,28 @@ DELETE http://localhost:4000/api/admin/userDelete/bz8xCHh6ulcU1bvl2T8f7BaKPvr2
 GET http://localhost:4000/api/admin/blockPass/Bl6kLHyvyORWI03byxQQ4ASfBmv2
 
 ###
+PUT http://localhost:4000/api/admin/banned/626f08d259f637605c073e4e
+Content-Type: application/json
+
+{
+    "reason": "Por gil",
+    "disabled": true
+}
+
+###
 GET http://localhost:4000/api/admin/allOrders
+
+###
+PUT http://localhost:4000/api/admin/categories/disabled/626c92cf275bb85e5d2852df
+
+###
+PUT http://localhost:4000/api/admin/categories/enabled/626c92cf275bb85e5d2852df
+
+###
+PUT http://localhost:4000/api/admin/userDelete/626c06cb697c9440406698dd
+
+###
+GET http://localhost:4000/api/admin/users
+
+###
+GET http://localhost:4000/api/admin/categories
