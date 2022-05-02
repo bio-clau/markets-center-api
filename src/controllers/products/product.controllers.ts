@@ -12,7 +12,7 @@ const productController = {
         try {
             const { name, description, image, stock, category, price, userId } = req.body;
             let img = '';
-            const user = await User.findById(userId);
+            const user = await User.findOne({userId: userId});
             if (!user) {
                 return next(new ErrorResponse("El usuario no existe", 404))
             }
