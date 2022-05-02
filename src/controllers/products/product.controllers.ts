@@ -35,7 +35,7 @@ const productController = {
             });
             newProduct.save(async (err: Object, product: Object) => {
                 if (err) return next(new ErrorResponse("Complete todos los campos", 400));
-                const productCat = await Product.find({disable: false}).populate({ path: 'category', select: "name" });
+                const productCat = await Product.find({banned: false, deleted: false}).populate({ path: 'category', select: "name" });
                 let result = productCat.filter((product: any) => `${product.userId}` === `${user._id}`);
                 if (product) {
                     res.status(201).json({
