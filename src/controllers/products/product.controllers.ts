@@ -130,7 +130,7 @@ const productController = {
     product: async (req: Request, res: Response, next: NextFunction) => {
         const { id } = req.params;
         try {
-            const product = await Product.findById(id);
+            const product = await Product.find(id);
             if (!product) {
                 return next(new ErrorResponse("El producto no existe", 404));
             }
@@ -288,10 +288,10 @@ const productController = {
     productBySeller: async(req: Request, res: Response, next: NextFunction) => {
         const { id } = req.params
         try {
-            const user = await User.findById(id);
+            const user = await User.findOne({userId: id});
                 if(user.banned) return next(new ErrorResponse("El usuario se encuentra deshabilitado", 404));
                 if(user.deleted) return next(new ErrorResponse("El usuario fue eliminado", 404));
-                Product.find({ userId: id, deleted: false }, (error: Object, products: Object) => {
+                Product.find({ userId: user._id, deleted: false }, (error: Object, products: Object) => {
                     if (error) return next(new ErrorResponse("El producto no existe", 404));
                     else {
                         return res.json({
