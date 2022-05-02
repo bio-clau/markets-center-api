@@ -102,8 +102,8 @@ const orderControllers = {
                 if (!order) {
                     return next(new ErrorResponse("La orden no existe", 404))
                 }
-                if (order.status === 'En proceso' && status === 'Aprovada') {
-                    const orderAprovada = await Order.findByIdAndUpdate(idOrder, { $set: { status: 'Aprovada' } })
+                if (order.status === 'Pendiente' && status === 'Aprobada') {
+                    const orderAprovada = await Order.findByIdAndUpdate(idOrder, { $set: { status: 'Aprobada' } })
                     const texto = checkoutMail(order)
                     const msg = {
                         to: order.userId.email,
@@ -114,11 +114,11 @@ const orderControllers = {
 
                     return res.json({
                         success: true,
-                        msg: 'La orden fue actualizada a Aprovada',
+                        msg: 'La orden fue actualizada a Aprobada',
                         data: orderAprovada
                     })
                 }
-                else if (order.status === 'En proceso' && status === 'Rechazada') {
+                else if (order.status === 'Pendiente' && status === 'Rechazada') {
                     let arrOrder = order.products
                     for await (const element of arrOrder) {
                         let stock = element.quantity
@@ -145,7 +145,7 @@ const orderControllers = {
                         data: orderRechazada
                     })
                 }
-                else if (order.status === 'Aprovada' && status === 'Despachada') {
+                else if (order.status === 'Aprobada' && status === 'Despachada') {
                     const orderDespachada = await Order.findByIdAndUpdate(idOrder, { $set: { status: 'Despachada' } });
 
                     const texto = despachoMail(order.userId.name)
