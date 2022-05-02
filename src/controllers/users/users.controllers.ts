@@ -115,6 +115,12 @@ const userController = {
       if (!user) {
         return next(new ErrorResponse("No se encontro el usuario", 404));
       }
+      if(user.banned) {
+        return next(new ErrorResponse("El usuario se encuentra momentaneamente bloqueado", 404));
+      }
+      if(user.deleted) {
+        return next(new ErrorResponse("El usuario se encuentra eliminado", 404));
+      }
       if(uploadImg){
         const result = await cloudinary.uploader.upload(image);
         if (!result) {
@@ -151,29 +157,21 @@ const userController = {
       next(err);
     }
   },
-  getAll: async (req: Request, res: Response, next: NextFunction)=>{
-      try {
-          const users = await User.find();
-          if(!users) {
-              return next(new ErrorResponse("No se encontraron usuarios", 404))
-          }
-          res.status(200).json({
-              success: true,
-              msg:"Usuarios encontrados",
-              data: users
-          })
-      } catch (err) {
-          next(err)
-      }
-  },
   getHistory: async (req:Request, res: Response, next:NextFunction)=>{
     const {id} = req.params;
     try {
       if(!id || id==='undefined') {
         return next(new ErrorResponse("El ID no es válido", 400));
       }
-      if(!await User.findById(id)){
-        return next(new ErrorResponse("El ID no es válido", 400))
+      const user = await User.findById(id)
+      if(!user) {
+        return next(new ErrorResponse("El ID no es válido", 400));
+      }
+      if(user.banned) {
+        return next(new ErrorResponse("El usuario se encuentra actualmente bloqueado", 404));
+      }
+      if(user.deleted) {
+        return next(new ErrorResponse("El usuario se encuentra eliminado", 404));
       }
       const orders = await Order.find({userId:id}).populate('products.productId')
       if(!orders.length){
@@ -191,7 +189,7 @@ const userController = {
 
   sellers: async (req: Request, res: Response, next:NextFunction)=> {
       try {
-          const sellers = await User.find({isSeller: true});
+          const sellers = await User.find({isSeller: true, banned: false, deleted: false});
           if(!sellers.length){
               return next(new ErrorResponse('No se encontrarosn vendedores', 404))
           }
@@ -211,6 +209,12 @@ const userController = {
       if(!user) {
         return next(new ErrorResponse("No se encontro usuario", 404))
       };
+      if(user.banned) {
+        return next(new ErrorResponse("El usuario se encuentra actualmente bloqueado", 404));
+      }
+      if(user.deleted) {
+        return next(new ErrorResponse("El usuario se encuentra eliminado", 404));
+      }
       res.status(200).json({
         success: true,
         msg:"Usuario encontrado",

@@ -1,7 +1,7 @@
 import {NextFunction, Request, Response} from 'express'
-import { updateExpressionWithTypeArguments } from 'typescript';
 const ErrorResponse = require('../../helpers/errorConstructor')
 const User = require('../../models/User');
+const Product = require('../../models/Product');
 const Favs = require('../../models/Favourites');
 
 const favsControllers = {
@@ -9,13 +9,16 @@ const favsControllers = {
         try {
             const {userId, productId} = req.body;
             const user = await User.findOne({userId: userId});
-            console.log('punto1')
+            const product = await Product.findById(productId);
+            if(!product) return next(new ErrorResponse("El producto no existe", 400))
+            if(product.banned) return next(new ErrorResponse("El producto fue deshabilitado", 400));
+            if(product.deleted) return next(new ErrorResponse("El producto fue eliminado", 400))
             if(!user){
                 return next(new ErrorResponse("Usuario Inválido", 400))
             }
+            if(user.banned) return next(new ErrorResponse("El usuario dueño de ese producto fue deshabilitado", 400));
+            if(user.deleted) return next(new ErrorResponse("El usuario dueño de ese producto fue eliminado", 400))
             const favs = await Favs.findOne({userId: user._id});
-            console.log('punto2')
-            console.log(favs)
             if(favs.favs.includes(productId)){
                 return next(new ErrorResponse("Ya existe en favoritos", 400))
             }
@@ -32,7 +35,6 @@ const favsControllers = {
                 },{
                     new:true
                 })
-                console.log('punto3')
                 if(!updated) return next(new ErrorResponse("No se pudo agregar a favoritos", 304))
             }
             res.status(201).json({
@@ -48,17 +50,20 @@ const favsControllers = {
         try {
             const {userId, productId} = req.body;
             const user = await User.findOne({userId: userId});
-            console.log('user')
+            const product = await Product.findById(productId);
+            if(!product) return next(new ErrorResponse("El producto no existe", 400))
+            if(product.banned) return next(new ErrorResponse("El producto fue deshabilitado", 400));
+            if(product.deleted) return next(new ErrorResponse("El producto fue eliminado", 400))
             if(!user){
                 return next(new ErrorResponse("Usuario Inválido", 400))
             }
+            if(user.banned) return next(new ErrorResponse("El usuario dueño de ese producto fue deshabilitado", 400));
+            if(user.deleted) return next(new ErrorResponse("El usuario dueño de ese producto fue eliminado", 400));
             const favs = await Favs.findOne({userId: user._id});
-            console.log('favs')
             if(!favs){
                 return next(new ErrorResponse("No se encontraron favoritos", 404))
             }
             const newFavs = favs.favs.filter((p: any)=>`${p}`!== productId)
-            console.log(newFavs)
             const updated = await Favs.findOneAndUpdate({userId: user._id},{
                 favs: newFavs
             },{new:true})
@@ -76,7 +81,9 @@ const favsControllers = {
         try {
             const {userId} = req.params;
             const user = await User.findOne({userId: userId});
-            if(!user) return next(new ErrorResponse("Usuario invalido", 400))
+            if(!user) return next(new ErrorResponse("Usuario invalido", 400));
+            if(user.banned) return next(new ErrorResponse("El usuario dueño de ese producto fue deshabilitado", 400));
+            if(user.deleted) return next(new ErrorResponse("El usuario dueño de ese producto fue eliminado", 400));
             const favs = await Favs.findOne({userId: user._id})
             if(!favs) return next(new ErrorResponse("Favoritos no encontrados", 404));
             res.status(200).json({
@@ -92,7 +99,9 @@ const favsControllers = {
         try {
             const {userId} = req.params;
             const user = await User.findOne({userId: userId});
-            if(!user) return next(new ErrorResponse("Usuario invalido", 400))
+            if(!user) return next(new ErrorResponse("Usuario invalido", 400));
+            if(user.banned) return next(new ErrorResponse("El usuario dueño de ese producto fue deshabilitado", 400));
+            if(user.deleted) return next(new ErrorResponse("El usuario dueño de ese producto fue eliminado", 400));
             const favs = await Favs.findOne({userId: user._id}).populate('favs')
             if(!favs) return next(new ErrorResponse("Detalle de Favoritos no encontrados", 404));
             res.status(200).json({
@@ -108,17 +117,20 @@ const favsControllers = {
         try {
             const {userId, productId} = req.body;
             const user = await User.findOne({userId: userId});
-            console.log('user')
+            const product = await Product.findById(productId);
+            if(!product) return next(new ErrorResponse("El producto no existe", 400))
+            if(product.banned) return next(new ErrorResponse("El producto fue deshabilitado", 400));
+            if(product.deleted) return next(new ErrorResponse("El producto fue eliminado", 400))
             if(!user){
                 return next(new ErrorResponse("Usuario Inválido", 400))
             }
+            if(user.banned) return next(new ErrorResponse("El usuario dueño de ese producto fue deshabilitado", 400));
+            if(user.deleted) return next(new ErrorResponse("El usuario dueño de ese producto fue eliminado", 400));
             const favs = await Favs.findOne({userId: user._id});
-            console.log('favs')
             if(!favs){
                 return next(new ErrorResponse("No se encontraron favoritos", 404))
             }
             const newFavs = favs.favs.filter((p: any)=>`${p}`!== productId)
-            console.log(newFavs)
             const updated = await Favs.findOneAndUpdate({userId: user._id},{
                 favs: newFavs
             },{new:true})

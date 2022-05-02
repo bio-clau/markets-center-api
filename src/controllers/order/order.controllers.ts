@@ -17,7 +17,14 @@ const orderControllers = {
         const { idUser } = req.body
         try {
             if (idUser) {
-                const userCart = await Cart.findOne({ userId: idUser }).populate([{ path: 'userId' },{ path: 'products.productId' }]).exec();
+                const user = await User.findOne({userId: idUser});
+                if (!user) {
+                    return next(new ErrorResponse("No se encontraron usuarios", 404))
+                }
+                if (user.banned) {
+                    return next(new ErrorResponse("El usuario se encuentra baneado", 404))
+                }
+                const userCart = await Cart.findOne({ userId: idUser }).populate([{ path: 'userId' }, { path: 'products.productId' }]).exec();
                 let purchasedProducts: { product: { name: string; description: string; image: string; price: number; userId: any; }; quantity: number; }[] = [];
                 userCart.products.map((element: any) => {
                     let product = {
@@ -168,8 +175,9 @@ const orderControllers = {
         try {
             const user = await User.findById(id);
             if (user) {
+                if(user.banned) return next(new ErrorResponse('El usuario se encuentra baneado', 404));
+                if(user.deleted) return next(new ErrorResponse('El usuario fue eliminado', 404));
                 const orders = await Order.find().populate('products.productId')
-                console.log(orders)
                 let aux: string[] = [];
                 orders.map((orden: any) => {
                     orden.products.map((product: any) => {
@@ -210,7 +218,6 @@ const orderControllers = {
                 data: payment
             });
         } catch (error) {
-            console.log(error)
             next(error)
         }
     }
