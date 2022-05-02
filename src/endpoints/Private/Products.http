@@ -7,9 +7,9 @@ Content-Type: application/json
     "description": "blablablasx5",
     "image": "",
     "stock": 3,
-    "category": ["626c92cf275bb85e5d2852df"],
+    "category": ["626f22e3a95de66ebd021094"],
     "price": 8000,
-    "userId": "626c06cb697c9440406698dd"
+    "userId": "626feb8aa54b167256d20652"
 }
 
 ### Update a product
@@ -29,3 +29,6 @@ Content-Type: application/json
     ],
     "price": 200
 }
+
+###
+GET http://localhost:4000/api/private/productSeller/Gil7uqiKwCXZ3PeONWku1ANviLt1
