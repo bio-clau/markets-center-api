@@ -7,8 +7,8 @@ const router = Router();
 //rutas de los admin
 router.get('/users', auth, adminController.getAllUsers);
 router.get('/categories', auth, adminController.allCategory);
-router.put('/categories/:id', auth, adminController.deleteCategory);
-router.put('/categories/:id',auth, adminController.updateCategory);
+router.put('/categories/delete/:id', auth, adminController.deleteCategory);
+router.put('/categories/update/:id',auth, adminController.updateCategory);
 router.put('/categories/disabled/:id', auth, adminController.disableCategory);
 router.put('/categories/enabled/:id', auth, adminController.enableCategory)
 router.post('/category', auth, adminController.addCategories);
