@@ -130,7 +130,7 @@ const productController = {
     product: async (req: Request, res: Response, next: NextFunction) => {
         const { id } = req.params;
         try {
-            const product = await Product.findById(id);
+            const product = await Product.find(id);
             if (!product) {
                 return next(new ErrorResponse("El producto no existe", 404));
             }
@@ -289,7 +289,6 @@ const productController = {
         const { id } = req.params
         try {
             const user = await User.findOne({userId: id});
-            console.log(user)
                 if(user.banned) return next(new ErrorResponse("El usuario se encuentra deshabilitado", 404));
                 if(user.deleted) return next(new ErrorResponse("El usuario fue eliminado", 404));
                 Product.find({ userId: user._id, deleted: false }, (error: Object, products: Object) => {
