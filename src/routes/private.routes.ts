@@ -20,14 +20,14 @@ router.put('/product/deleted/:id', auth, deleteProduct)
 router.put('/product/disable/:id', auth, disableProduct);
 router.put('/product/enable/:id', auth, enableProduct);
 
-router.post('/addOrder', auth, addOrder);
+router.post('/addOrder', addOrder);
 router.get('/sendOrder/:id', auth, sendOrder);
 router.get('/orderSellers/:id', auth, orderSellers);
 router.get('/productSeller/:id', productBySeller)
 router.put('/updateOrder', auth, updateOrder);
 
 
-router.post('/payment', auth, payment)
+router.post('/payment', payment)
 //cart
 router.put('/cart',  getCart)
 router.put('/emptyCart', emptyCart)
