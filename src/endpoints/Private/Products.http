@@ -29,3 +29,6 @@ Content-Type: application/json
     ],
     "price": 200
 }
+
+###
+GET http://localhost:4000/api/private/productSeller/Gil7uqiKwCXZ3PeONWku1ANviLt1
