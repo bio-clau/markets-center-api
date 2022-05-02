@@ -1,5 +1,5 @@
 import { Router } from "express";
-const { filterBySellerAndCategories } = require('../controllers/filters/filters.controllers')
+const { filterBySellerAndCategories, filterByStatus } = require('../controllers/filters/filters.controllers')
 const { all, product, createReview } = require('../controllers/products/product.controllers');
 const { allCategories } = require('../controllers/categories/categories.controllers');
 const {auth} = require('../middlewares/auth')
@@ -16,6 +16,7 @@ router.get('/categories', allCategories);
 
 /* Filters */
 router.get('/filter', filterBySellerAndCategories);
+router.get('/filter/status', filterByStatus)
 
 /* Reviews */
 router.post('/product/:id/review/add', auth, createReview)
