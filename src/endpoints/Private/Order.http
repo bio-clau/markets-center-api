@@ -2,7 +2,7 @@ POST http://localhost:4000/api/private/addOrder
 Content-Type: application/json
 
 {
-    "idUser": "62671fb086718c3f6e6214ac"
+    "idUser": "kDJhV2C1H4ZwVaqjzwB8Hb2Jgnt2"
 }
 
 ###

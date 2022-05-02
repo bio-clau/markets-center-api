@@ -2,9 +2,10 @@ PUT http://localhost:4000/api/private/cart
 Content-Type: application/json
 
 {
-    "idUser": "g0EuaRFBYzdbiJAmzUpFvX6FVTm1",
-    "products":[],
-    "amount": 0
+    "idUser": "kDJhV2C1H4ZwVaqjzwB8Hb2Jgnt2",
+    "products":[{"productId": "62700faf67dcc825f9109ada", "quantity": 2},
+    {"productId": "627048a54ab75f392ad78c31", "quantity": 2}],
+    "amount": 100
 }
 
 ###

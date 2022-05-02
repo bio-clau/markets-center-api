@@ -24,7 +24,9 @@ const orderControllers = {
                 if (user.banned) {
                     return next(new ErrorResponse("El usuario se encuentra baneado", 404))
                 }
-                const userCart = await Cart.findOne({ userId: idUser }).populate([{ path: 'userId' }, { path: 'products.productId' }]).exec();
+                console.log(idUser)
+                const userCart = await Cart.findOne({ userId: user._id }).populate([{ path: 'userId' }, { path: 'products.productId' }]).exec();
+                console.log('hola')
                 let purchasedProducts: { product: { name: string; description: string; image: string; price: number; userId: any; }; quantity: number; }[] = [];
                 userCart.products.map((element: any) => {
                     let product = {
@@ -39,9 +41,11 @@ const orderControllers = {
                     }
                     purchasedProducts.push(product);
                 })
+                console.log('hola')
                 if (userCart) {
+                    console.log('hola')
                     const order = new Order({
-                        userId: idUser,
+                        userId: user._id,
                         products: userCart.products,
                         purchased: purchasedProducts,
                         amount: userCart.amount,
