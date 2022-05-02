@@ -212,6 +212,35 @@ const productController = {
             next(error)
         }
     },
+    deleteProduct: async (req: Request, res: Response, next: NextFunction) => {
+        const { id } = req.params;
+        try {
+            if (id) {
+                const productDelete = await Product.findById(id);
+                if (!productDelete) return next(new ErrorResponse("El producto no existe", 404));
+                if (productDelete.banned) return next(new ErrorResponse("El producto ya se encuentra deshabilitado", 404))
+                if (productDelete.deleted) {
+                    return next(new ErrorResponse("El producto ya se encuentra eliminado", 404));
+                }
+                Product.findByIdAndUpdate(id, { deleted: true }, { new: true, runValidators: true }, async (error: Object, product: Object) => {
+                    if (error) return next(new ErrorResponse("No se encontro el producto", 404));
+                    if (product) {
+                        const products = await Product.find();
+                        res.json({
+                            success: true,
+                            msg: "El producto fue eliminado exitosamente",
+                            data: products
+                        });
+                    };
+                });
+            }
+            else {
+                return next(new ErrorResponse("Son necesarios todos los parametros", 404));
+            }
+        } catch (error) {
+            next(error)
+        }
+    },
     createReview: async (req: Request, res: Response, next: NextFunction) => {
         const { rating, comment, user } = req.body;
         const { id } = req.params

@@ -1,6 +1,6 @@
 import { Router } from "express";
 const { filterBySellerAndCategories } = require('../controllers/filters/filters.controllers')
-const { all, product, disableProduct, enableProduct, createReview } = require('../controllers/products/product.controllers');
+const { all, product, createReview } = require('../controllers/products/product.controllers');
 const { allCategories } = require('../controllers/categories/categories.controllers');
 const {auth} = require('../middlewares/auth')
 
@@ -9,8 +9,6 @@ const router = Router();
 /* Products */
 router.get('/products', all);
 router.get('/product/:id', product);
-router.put('/product/disable/:id', auth, disableProduct);
-router.put('/product/enable/:id', auth, enableProduct);
 
 
 /* Categories */
