@@ -35,6 +35,7 @@ router.put('/emptyCart', emptyCart)
 //users
 router.post('/users/add',auth, userController.add);
 router.get('/users/byid/:id', auth, userController.byId);
+//esta no debe tener auth
 router.get('/users/sellers',  userController.sellers);
 router.get('/users/history/:id', auth, userController.getHistory);
 router.put('/users/update', auth, userController.update);
