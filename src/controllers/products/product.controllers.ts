@@ -130,7 +130,7 @@ const productController = {
     product: async (req: Request, res: Response, next: NextFunction) => {
         const { id } = req.params;
         try {
-            const product = await Product.find(id);
+            const product = await Product.findById(id);
             if (!product) {
                 return next(new ErrorResponse("El producto no existe", 404));
             }
