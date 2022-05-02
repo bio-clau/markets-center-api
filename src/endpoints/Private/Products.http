@@ -7,9 +7,9 @@ Content-Type: application/json
     "description": "blablablasx5",
     "image": "",
     "stock": 3,
-    "category": ["626c92cf275bb85e5d2852df"],
+    "category": ["626f22e3a95de66ebd021094"],
     "price": 8000,
-    "userId": "626c06cb697c9440406698dd"
+    "userId": "626feb8aa54b167256d20652"
 }
 
 ### Update a product

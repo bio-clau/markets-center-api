@@ -276,7 +276,7 @@ const adminController = {
                     if (error) return next(new ErrorResponse("No se encontro el usuario", 404));
                     if (userBanned) {
                         await firebaseAdmin.auth().updateUser(user.userId, { disabled: true })
-                        const texto = bannedMail(user.name, user.email, reason = 'Tuvo conductas inadecuadas')
+                        const texto = bannedMail(user.name, user.email, reason)
                         const msg = {
                             to: user.email,
                             subject: 'Su cuenta fue bloqueada',
@@ -299,7 +299,7 @@ const adminController = {
                     if (error) return next(new ErrorResponse("No se encontro el usuario", 404));
                     if (userDesbanned) {
                         await firebaseAdmin.auth().updateUser(user.userId, { disabled: false })
-                        const texto = desbannedMail(user.name, user.email, reason = 'Se cumplio el tiempo deteminado de baneo')
+                        const texto = desbannedMail(user.name, user.email, reason)
                         const msg = {
                             to: user.email,
                             subject: 'Su cuenta fue desbloqueada',
