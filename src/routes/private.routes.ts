@@ -26,8 +26,8 @@ router.put('/updateOrder', auth, updateOrder);
 
 router.post('/payment', auth, payment)
 //cart
-router.put('/cart', auth, getCart)
-router.put('/emptyCart', auth, emptyCart)
+router.put('/cart',  getCart)
+router.put('/emptyCart', emptyCart)
 
 //users
 router.post('/users/add',auth, userController.add);
