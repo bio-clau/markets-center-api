@@ -14,15 +14,19 @@ const filtersControllers = {
                 let arrayCategory = categoriesAux.split('-');
                 let idCategory: string[] = []
                 for await (const element of arrayCategory) {
-                    let category = await Categories.find({ name: { $regex: `.*${element}`, $options: "i" } });
+                    let category = await Categories.find({ banned: false, deleted: false, name: { $regex: `.*${element}`, $options: "i" } });
+                    if(category.banned) return next(new ErrorResponse("La categoria fue deshabilitada", 404));
+                    if(category.deleted) return next(new ErrorResponse("La categoria fue eliminada", 404));
                     idCategory.push(`${category[0]._id}`) // devuelve el objeto pero dentro de un array
                     // por eso el [0]
                 };
-                const productCat = await Product.find({ category: idCategory }).populate({ path: 'category', select: "name" });
-                const user = await User.find({ userId: id })
+                const productCat = await Product.find({ category: idCategory, banned: false, deleted: false, }).populate({ path: 'category', select: "name" });
+                const user = await User.find({ userId: id, banned: false, deleted: false, })
                 if (!user) {
                     return next(new ErrorResponse("El producto no existe", 404))
                 }
+                if(user.banned) return next(new ErrorResponse("El usuario dueño de esos productos se encuentra deshabilitado", 404));
+                if(user.deleted) return next(new ErrorResponse("El usuario dueño de esos productos fue eliminado", 404));
                 let result = productCat.filter((product: any) => `${product.userId}` === id);
                 return res.json({
                     success: true,
@@ -35,11 +39,13 @@ const filtersControllers = {
                 let arrayCategory = categoriesAux.split('-');
                 let idCategory: string[] = []
                 for await (const element of arrayCategory) {
-                    let category = await Categories.find({ name: { $regex: `.*${element}`, $options: "i" } });
+                    let category = await Categories.find({ banned: false, deleted: false, name: { $regex: `.*${element}`, $options: "i" } });
+                    if(category.banned) return next(new ErrorResponse("La categoria fue deshabilitada", 404));
+                    if(category.deleted) return next(new ErrorResponse("La categoria fue eliminada", 404));
                     idCategory.push(`${category[0]._id}`) // devuelve el objeto pero dentro de un array
                     // por eso el [0]
                 };
-                Product.find({ category: idCategory }, (error: Object, product: Object) => {
+                Product.find({ category: idCategory, banned: false, deleted: false }, (error: Object, product: Object) => {
                     if (error || Object.keys(product).length === 0) return next(new ErrorResponse("El producto no existe", 404));
                     else {
                         return res.json({
@@ -51,7 +57,10 @@ const filtersControllers = {
                 }).populate({ path: 'category', select: "name" });;
             }
             else if (id) {
-                Product.find({ userId: id }, (error: Object, product: Object) => {
+                const user = await User.findById(id);
+                if(user.banned) return next(new ErrorResponse("El usuario se encuentra deshabilitado", 404));
+                if(user.deleted) return next(new ErrorResponse("El usuario fue eliminado", 404));
+                Product.find({ userId: id, banned: false, deleted: false }, (error: Object, product: Object) => {
                     if (error) return next(new ErrorResponse("El producto no existe", 404));
                     else {
                         return res.json({

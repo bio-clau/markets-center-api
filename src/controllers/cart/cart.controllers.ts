@@ -10,10 +10,13 @@ const cartController = {
         const { idUser, products, amount } = req.body;
         try {
             if (idUser) {
-                const iduser = await User.findOne({userId: idUser});
+                const iduser = await User.findOne({ userId: idUser });
+                if (!iduser) return next(new ErrorResponse("El usuario no existe", 404))
+                if (iduser.banned) return next(new ErrorResponse("El usuario se encuentra deshabiltado", 404));
+                if (iduser.deleted) return next(new ErrorResponse("El usuario fue eliminado", 404));
                 const userCart = await Cart.findOne({ userId: iduser._id }).populate([{ path: 'products.productId' }, { path: 'userId' }]);
                 if (userCart) {
-                    if (products && amount) {
+                    if (products && amount >= 0) {
                         Cart.findByIdAndUpdate(userCart._id, {
                             $set: {
                                 products: products,
@@ -22,6 +25,7 @@ const cartController = {
                         }, { new: true, runValidators: true }, (error: Object, cart: Object) => {
                             if (error) next(new ErrorResponse("El carrito no existe", 404));
                             else {
+                                console.log(cart);
                                 return res.status(200).json({
                                     success: true,
                                     msg: "El carrito fue actualizado con exito",
@@ -54,7 +58,10 @@ const cartController = {
         const { idUser, idOrder } = req.body;
         try {
             if (idUser && idOrder) {
-                const iduser = await User.findOne({userId: idUser});
+                const iduser = await User.findOne({ userId: idUser });
+                if (!iduser) return next(new ErrorResponse("El usuario no existe", 404))
+                if (iduser.banned) return next(new ErrorResponse("El usuario se encuentra deshabiltado", 404));
+                if (iduser.deleted) return next(new ErrorResponse("El usuario fue eliminado", 404));
                 const userCart = await Cart.findOne({ userId: iduser._id }).populate('userId').exec();
                 const order = await Order.findById(idOrder).populate([{ path: 'products.productId' }, { path: 'userId' }]);
                 if (userCart && order) {
