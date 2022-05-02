@@ -149,7 +149,7 @@ const adminController = {
             if (id) {
                 const user = await User.findById(id);
                 if (!user) return next(new ErrorResponse("El usuario no existe", 404));
-                if (user.deleted) return next(new ErrorResponse("El usuario ya se encuentra eliminado", 404))
+                if (user.deleted) return next(new ErrorResponse("El usuario ya se encuentra eliminado", 404));
                 User.findByIdAndUpdate(id, { deleted: true }, { new: true, runValidators: true }, async (error: Object, userDeleted: Object) => {
                     if (error) return next(new ErrorResponse("No se encontro el usuario", 404));
                     await firebaseAdmin.auth().updateUser(user.userId, { disabled: true });
@@ -272,6 +272,7 @@ const adminController = {
                 const user = await User.findById(id);
                 if (user.banned) return next(new ErrorResponse("El usuario ya se encuentra deshabilitado", 404));
                 if (user.deleted) return next(new ErrorResponse("El usuario se encuentra eliminado", 404));
+                if (user.admin) return next(new ErrorResponse("El usuario es admin, no puede ser deshabilitado", 404));
                 User.findByIdAndUpdate(id, { banned: true }, { new: true, runValidators: true }, async (error: Object, userBanned: Object) => {
                     if (error) return next(new ErrorResponse("No se encontro el usuario", 404));
                     if (userBanned) {
