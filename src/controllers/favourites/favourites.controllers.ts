@@ -19,7 +19,7 @@ const favsControllers = {
             if(user.banned) return next(new ErrorResponse("El usuario dueño de ese producto fue deshabilitado", 400));
             if(user.deleted) return next(new ErrorResponse("El usuario dueño de ese producto fue eliminado", 400))
             const favs = await Favs.findOne({userId: user._id});
-            if(favs.favs.includes(productId)){
+            if(favs?.favs.includes(productId)){
                 return next(new ErrorResponse("Ya existe en favoritos", 400))
             }
             let updated
