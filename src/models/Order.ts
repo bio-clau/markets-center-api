@@ -66,7 +66,7 @@ const orderSchema = new Schema<IOrder>({
     },
     status: {
         type: String,
-        enum: ['Pendiente', 'Rechazada', 'En proceso', 'Aprovada', 'Despachada'],
+        enum: ['Pendiente', 'Rechazada', 'Aprovada', 'Despachada'],
         default: 'Pendiente'
     }
 },
