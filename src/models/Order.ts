@@ -6,6 +6,7 @@ interface IOrder {
     amount:number;
     address:string;
     status:string;
+    dispatches: [],
     purchased:[];
 }
 const orderSchema = new Schema<IOrder>({
@@ -55,6 +56,16 @@ const orderSchema = new Schema<IOrder>({
         quantity: {
             type: Number,
             default: 0
+        }
+    }],
+    dispatches: [{
+        sellerId: {
+            type: Schema.Types.ObjectId,
+            ref: "User"
+        },
+        dispatched: {
+            type: Boolean,
+            default: false
         }
     }],
     amount: {

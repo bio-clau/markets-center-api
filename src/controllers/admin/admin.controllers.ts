@@ -238,11 +238,12 @@ const adminController = {
                     orders.map((order: any, index: number) => {
                         let vendedores: any[] = [];
                         order.products.map((vendedor: any) =>  {
-                            vendedor.productId !== null && !vendedores.includes(vendedor.productId.userId.name) && vendedores.push(vendedor.productId.userId.name);
+                            vendedor.productId !== null && !vendedores.includes(vendedor.productId.userId?.name) && vendedores.push(vendedor.productId.userId?.name);
                         })
                         let vendedoresString = vendedores.join(' - ');
                         let fecha = `${order.createdAt}`.slice(0, 15);
                         let newObj = {
+                            orderId: order._id,
                             id: index + 1,
                             vendedores: vendedoresString,
                             comprador: order.userId === null ? 'Anonimo' : order.userId.name,
@@ -259,7 +260,7 @@ const adminController = {
                         data: ordersObj
                     })
                 }
-            }).populate([{ path: 'products.productId', populate: {path: 'userId'} },{ path: 'purchased.product.userId' }, { path: 'userId' }])
+            }).populate([{ path: 'products.productId', populate: {path: 'userId'} },{ path: 'purchased.product.userId' }, { path: 'userId' }, {path: 'dispatches.sellerId'}]);
         } catch (error) {
             next(error)
         }
