@@ -17,16 +17,14 @@ const orderControllers = {
         const { idUser } = req.body
         try {
             if (idUser) {
-                const user = await User.findOne({userId: idUser});
+                const user = await User.findOne({ userId: idUser });
                 if (!user) {
                     return next(new ErrorResponse("No se encontraron usuarios", 404))
                 }
                 if (user.banned) {
                     return next(new ErrorResponse("El usuario se encuentra baneado", 404))
                 }
-                console.log(idUser)
                 const userCart = await Cart.findOne({ userId: user._id }).populate([{ path: 'userId' }, { path: 'products.productId' }]).exec();
-                console.log('hola')
                 let purchasedProducts: { product: { name: string; description: string; image: string; price: number; userId: any; }; quantity: number; }[] = [];
                 userCart.products.map((element: any) => {
                     let product = {
@@ -41,27 +39,49 @@ const orderControllers = {
                     }
                     purchasedProducts.push(product);
                 })
-                console.log('hola')
                 if (userCart) {
-                    console.log('hola')
-                    const order = new Order({
-                        userId: user._id,
-                        products: userCart.products,
-                        purchased: purchasedProducts,
-                        amount: userCart.amount,
-                        address: userCart.userId.address,
-                        status: "Pendiente"
-                    });
-                    order.save((error: Object, order: Object) => {
-                        if (error) return next(new ErrorResponse("All parameters are required", 404));
-                        if (order) {
+                    let stockDisponible = false;
+                    let arrOrder = userCart.products;
+                    for await (const element of arrOrder) {
+                        let stock = element.quantity;
+                        let product = await Product.findById(element.productId).exec();
+                        if (product.stock >= stock) {
+                            stockDisponible = true;
+                            let updateStock = {
+                                "stock": product.stock - stock,
+                            }
+                            await Product.findByIdAndUpdate(element.productId, { $set: updateStock });
+                        }
+                    }
+                    if (stockDisponible) {
+                        const order = new Order({
+                            userId: user._id,
+                            products: userCart.products,
+                            purchased: purchasedProducts,
+                            amount: userCart.amount,
+                            address: userCart.userId.address,
+                            status: "Pendiente"
+                        });
+                        await Cart.findByIdAndUpdate(userCart._id, {
+                            $set: {
+                                products: [],
+                                amount: 0
+                            }
+                        }, { new: true, runValidators: true }).populate('userId');
+                        const newOrder = await order.save();
+                        
+                        if(newOrder) {
                             return res.json({
                                 success: true,
-                                msg: 'The order was created',
-                                data: order
+                                msg: 'La orden fue creada',
+                                data: newOrder
                             })
                         }
-                    });
+                    }
+                    else {
+                        if(userCart.products.length <= 0) return next(new ErrorResponse("No hay productos agregados al carrito", 404))
+                        return next(new ErrorResponse("Lo siento, no hay stock", 404));
+                    }
                 }
                 else {
                     return next(new ErrorResponse("El carrito de esa persona no existe", 404))
@@ -179,8 +199,8 @@ const orderControllers = {
         try {
             const user = await User.findById(id);
             if (user) {
-                if(user.banned) return next(new ErrorResponse('El usuario se encuentra baneado', 404));
-                if(user.deleted) return next(new ErrorResponse('El usuario fue eliminado', 404));
+                if (user.banned) return next(new ErrorResponse('El usuario se encuentra baneado', 404));
+                if (user.deleted) return next(new ErrorResponse('El usuario fue eliminado', 404));
                 const orders = await Order.find().populate('products.productId')
                 let aux: string[] = [];
                 orders.map((orden: any) => {
