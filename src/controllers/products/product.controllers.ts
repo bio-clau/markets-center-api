@@ -12,7 +12,7 @@ const productController = {
         try {
             const { name, description, image, stock, category, price, userId } = req.body;
             let img = '';
-            const user = await User.findOne({userId: userId});
+            const user = await User.findOne({ userId: userId });
             if (!user) {
                 return next(new ErrorResponse("El usuario no existe", 404))
             }
@@ -35,7 +35,7 @@ const productController = {
             });
             newProduct.save(async (err: Object, product: Object) => {
                 if (err) return next(new ErrorResponse("Complete todos los campos", 400));
-                const productCat = await Product.find({banned: false, deleted: false}).populate({ path: 'category', select: "name" });
+                const productCat = await Product.find({ banned: false, deleted: false }).populate([{ path: 'category', select: "name" }, { path: 'reviews' }]).populate({ path: 'reviews.user' })
                 let result = productCat.filter((product: any) => `${product.userId}` === `${user._id}`);
                 if (product) {
                     res.status(201).json({
@@ -83,7 +83,7 @@ const productController = {
             }, { new: true, runValidators: true }, async (err: Object, productUpdated: Object) => {
                 if (err) return next(new ErrorResponse("No se encontró el ID", 404));
                 if (productUpdated) {
-                    const allProduct = await Product.find({userId: product.userId})
+                    const allProduct = await Product.find({ userId: product.userId }).populate([{ path: 'category', select: "name" }, { path: 'reviews' }]).populate({ path: 'reviews.user' })
                     res.json({
                         success: true,
                         msg: "Producto actualizado correctamente",
@@ -101,7 +101,7 @@ const productController = {
         const { name } = req.query;
         try {
             if (name) {
-                Product.find({banned: false ,deleted: false ,name: { $regex: `.*${name}`, $options: "i" }}, (err: Object, product: Object) => {
+                Product.find({ banned: false, deleted: false, name: { $regex: `.*${name}`, $options: "i" } }, (err: Object, product: Object) => {
                     if (err) return next(new ErrorResponse("El producto no existe", 404));
                     else {
                         res.json({
@@ -110,10 +110,10 @@ const productController = {
                             data: product
                         });
                     }
-                }).populate({ path: 'category', select: "name" });
+                }).populate([{ path: 'category', select: "name" }, { path: 'reviews' }]).populate({ path: 'reviews.user' });
             }
             else {
-                const allProducts = await Product.find({banned: false, deleted: false}).populate([{ path: 'category', select: "name" }, { path: 'reviews' }]).populate({ path: 'reviews.user' });
+                const allProducts = await Product.find({ banned: false, deleted: false }).populate([{ path: 'category', select: "name" }, { path: 'reviews' }]).populate({ path: 'reviews.user' });
                 res.json({
                     success: true,
                     msg: "Todos los productos fueron enviados",
@@ -140,7 +140,7 @@ const productController = {
             if (product.deleted) {
                 return next(new ErrorResponse("El producto se encuentra eliminado", 404));
             }
-            Product.findById(id).populate({ path: 'category', select: "name" }).exec((err: Object, productId: Object) => {
+            Product.findById(id).populate([{ path: 'category', select: "name" }, { path: 'reviews' }]).populate({ path: 'reviews.user' }).exec((err: Object, productId: Object) => {
                 if (err) return next(new ErrorResponse("El producto no existe", 404));
                 else {
                     res.json({
@@ -267,7 +267,7 @@ const productController = {
 
                         product.rating = product.reviews.reduce((acc: any, item: any) => item.rating + acc, 0) / product.numReviews;
                         await product.save();
-                        const allProducts = await Product.find({ banned: false, deleted: false }).populate({ path: 'category', select: "name" });
+                        const allProducts = await Product.find({ banned: false, deleted: false }).populate([{ path: 'category', select: "name" }, { path: 'reviews' }]).populate({ path: 'reviews.user' })
                         res.json({
                             success: true,
                             msg: "Calificación agregada correctamente",
@@ -285,22 +285,22 @@ const productController = {
             next(error);
         }
     },
-    productBySeller: async(req: Request, res: Response, next: NextFunction) => {
+    productBySeller: async (req: Request, res: Response, next: NextFunction) => {
         const { id } = req.params
         try {
-            const user = await User.findOne({userId: id});
-                if(user.banned) return next(new ErrorResponse("El usuario se encuentra deshabilitado", 404));
-                if(user.deleted) return next(new ErrorResponse("El usuario fue eliminado", 404));
-                Product.find({ userId: user._id, deleted: false }, (error: Object, products: Object) => {
-                    if (error) return next(new ErrorResponse("El producto no existe", 404));
-                    else {
-                        return res.json({
-                            success: true,
-                            msg: "Todos los productos coincidentes fueron enviados",
-                            data: products
-                        });
-                    }
-                });
+            const user = await User.findOne({ userId: id });
+            if (user.banned) return next(new ErrorResponse("El usuario se encuentra deshabilitado", 404));
+            if (user.deleted) return next(new ErrorResponse("El usuario fue eliminado", 404));
+            Product.find({ userId: user._id, deleted: false }, (error: Object, products: Object) => {
+                if (error) return next(new ErrorResponse("El producto no existe", 404));
+                else {
+                    return res.json({
+                        success: true,
+                        msg: "Todos los productos coincidentes fueron enviados",
+                        data: products
+                    });
+                }
+            }).populate([{ path: 'category', select: "name" }, { path: 'reviews' }]).populate({ path: 'reviews.user' });
         } catch (error) {
             next(error)
         }

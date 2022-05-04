@@ -7,7 +7,7 @@ export function despachoMail (name: string) {
        <h3 style="display:block">El vendedor ya despachó tu orden y va en camino.</h3>
     </div>
     <div style="display:flex; justify-content:center; align-items: center;">
-         <h3 style="display:block">¡Esperamos disfrutes tu compra!</h3>
+         <h3 style="display:block">¡Esperamos que disfrutes tu compra!</h3>
     </div>
     <div style="display:flex; justify-content:flex-end">
         <p>Equipo de Markets Center</p>
