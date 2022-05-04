@@ -25,7 +25,6 @@ const cartController = {
                         }, { new: true, runValidators: true }, (error: Object, cart: Object) => {
                             if (error) next(new ErrorResponse("El carrito no existe", 404));
                             else {
-                                console.log(cart);
                                 return res.status(200).json({
                                     success: true,
                                     msg: "El carrito fue actualizado con exito",

@@ -26,6 +26,7 @@ const orderControllers = {
                 }
                 const userCart = await Cart.findOne({ userId: user._id }).populate([{ path: 'userId' }, { path: 'products.productId' }]).exec();
                 let purchasedProducts: { product: { name: string; description: string; image: string; price: number; userId: any; }; quantity: number; }[] = [];
+                let sellers: any[] = [];
                 userCart.products.map((element: any) => {
                     let product = {
                         product: {
@@ -37,6 +38,12 @@ const orderControllers = {
                         },
                         quantity: element.quantity
                     }
+                    let seller = {
+                        sellerId: element.productId.userId,
+                        dispatched: false
+                    }
+                    let variable = sellers.some(e => `${e.sellerId}` === `${element.productId.userId}`)
+                    !variable && sellers.push(seller)
                     purchasedProducts.push(product);
                 })
                 if (userCart) {
@@ -60,6 +67,7 @@ const orderControllers = {
                             purchased: purchasedProducts,
                             amount: userCart.amount,
                             address: userCart.userId.address,
+                            dispatches: sellers,
                             status: "Pendiente"
                         });
                         await Cart.findByIdAndUpdate(userCart._id, {
@@ -69,8 +77,8 @@ const orderControllers = {
                             }
                         }, { new: true, runValidators: true }).populate('userId');
                         const newOrder = await order.save();
-                        
-                        if(newOrder) {
+
+                        if (newOrder) {
                             return res.json({
                                 success: true,
                                 msg: 'La orden fue creada',
@@ -79,7 +87,7 @@ const orderControllers = {
                         }
                     }
                     else {
-                        if(userCart.products.length <= 0) return next(new ErrorResponse("No hay productos agregados al carrito", 404))
+                        if (userCart.products.length <= 0) return next(new ErrorResponse("No hay productos agregados al carrito", 404))
                         return next(new ErrorResponse("Lo siento, no hay stock", 404));
                     }
                 }
@@ -222,8 +230,43 @@ const orderControllers = {
                     return next(new ErrorResponse('No existen ordenes del usuario', 404))
                 }
             }
+            else {
+                return next(new ErrorResponse('El usuario no existe', 404))
+            }
         } catch (error) {
             next(error);
+        }
+    },
+    updateDispatches: async (req: Request, res: Response, next: NextFunction) => {
+        const { idUser, idOrder } = req.body;
+        try {
+            if (idUser && idOrder) {
+                const order = await Order.findById(idOrder).populate({ path: 'dispatches.sellerId' });
+                const user = await User.findOne({ userId: idUser })
+                if (order && user) {
+                    order.dispatches.map((element: any) => {
+                        if (`${element.sellerId._id}` === `${user._id}`) {
+                            element.dispatched = true;
+                        }
+                    });
+                    const dispatchUpdated = await Order.findByIdAndUpdate(idOrder, { $set: order }, { new: true, runValidators: true });
+                    if (dispatchUpdated) {
+                        return res.json({
+                            success: true,
+                            msg: "Todas las ordenes coincidentes fueron enviadas",
+                            data: dispatchUpdated
+                        })
+                    }
+                }
+                else {
+                    return next(new ErrorResponse('El usuario o la orden son inexistentes', 404))
+                }
+            }
+            else {
+                return next(new ErrorResponse('Todos los parametros son requeridos', 404))
+            }
+        } catch (error) {
+            next(error)
         }
     },
     payment: async (req: Request, res: Response, next: NextFunction) => {
