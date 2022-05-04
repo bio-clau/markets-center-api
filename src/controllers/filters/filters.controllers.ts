@@ -20,7 +20,7 @@ const filtersControllers = {
                     idCategory.push(`${category[0]._id}`) // devuelve el objeto pero dentro de un array
                     // por eso el [0]
                 };
-                const productCat = await Product.find({ category: idCategory, banned: false, deleted: false, }).populate({ path: 'category', select: "name" });
+                const productCat = await Product.find({ category: idCategory, banned: false, deleted: false, }).populate([{ path: 'category', select: "name" }, { path: 'reviews' }]).populate({ path: 'reviews.user' });
                 const user = await User.find({ userId: id, banned: false, deleted: false, })
                 if (!user) {
                     return next(new ErrorResponse("El producto no existe", 404))
@@ -54,7 +54,7 @@ const filtersControllers = {
                             data: product
                         });
                     }
-                }).populate({ path: 'category', select: "name" });;
+                }).populate([{ path: 'category', select: "name" }, { path: 'reviews' }]).populate({ path: 'reviews.user' });
             }
             else if (id) {
                 const user = await User.findById(id);
@@ -69,7 +69,7 @@ const filtersControllers = {
                             data: product
                         });
                     }
-                });
+                }).populate([{ path: 'category', select: "name" }, { path: 'reviews' }]).populate({ path: 'reviews.user' });
             }
         } catch (error) {
             next(error)

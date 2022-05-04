@@ -41,3 +41,6 @@ GET http://localhost:4000/api/admin/users
 
 ###
 GET http://localhost:4000/api/admin/categories
+
+###
+DELETE http://localhost:4000/api/admin/deleteUid/DO0LrA6KWZfbQ4b3le1KGCz5qnl1
