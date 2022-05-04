@@ -15,8 +15,8 @@ const filtersControllers = {
                 let idCategory: string[] = []
                 for await (const element of arrayCategory) {
                     let category = await Categories.find({ banned: false, deleted: false, name: { $regex: `.*${element}`, $options: "i" } });
-                    if(category.banned) return next(new ErrorResponse("La categoria fue deshabilitada", 404));
-                    if(category.deleted) return next(new ErrorResponse("La categoria fue eliminada", 404));
+                    if (category.banned) return next(new ErrorResponse("La categoria fue deshabilitada", 404));
+                    if (category.deleted) return next(new ErrorResponse("La categoria fue eliminada", 404));
                     idCategory.push(`${category[0]._id}`) // devuelve el objeto pero dentro de un array
                     // por eso el [0]
                 };
@@ -25,8 +25,8 @@ const filtersControllers = {
                 if (!user) {
                     return next(new ErrorResponse("El producto no existe", 404))
                 }
-                if(user.banned) return next(new ErrorResponse("El usuario dueño de esos productos se encuentra deshabilitado", 404));
-                if(user.deleted) return next(new ErrorResponse("El usuario dueño de esos productos fue eliminado", 404));
+                if (user.banned) return next(new ErrorResponse("El usuario dueño de esos productos se encuentra deshabilitado", 404));
+                if (user.deleted) return next(new ErrorResponse("El usuario dueño de esos productos fue eliminado", 404));
                 let result = productCat.filter((product: any) => `${product.userId}` === id);
                 return res.json({
                     success: true,
@@ -40,8 +40,8 @@ const filtersControllers = {
                 let idCategory: string[] = []
                 for await (const element of arrayCategory) {
                     let category = await Categories.find({ banned: false, deleted: false, name: { $regex: `.*${element}`, $options: "i" } });
-                    if(category.banned) return next(new ErrorResponse("La categoria fue deshabilitada", 404));
-                    if(category.deleted) return next(new ErrorResponse("La categoria fue eliminada", 404));
+                    if (category.banned) return next(new ErrorResponse("La categoria fue deshabilitada", 404));
+                    if (category.deleted) return next(new ErrorResponse("La categoria fue eliminada", 404));
                     idCategory.push(`${category[0]._id}`) // devuelve el objeto pero dentro de un array
                     // por eso el [0]
                 };
@@ -58,8 +58,8 @@ const filtersControllers = {
             }
             else if (id) {
                 const user = await User.findById(id);
-                if(user.banned) return next(new ErrorResponse("El usuario se encuentra deshabilitado", 404));
-                if(user.deleted) return next(new ErrorResponse("El usuario fue eliminado", 404));
+                if (user.banned) return next(new ErrorResponse("El usuario se encuentra deshabilitado", 404));
+                if (user.deleted) return next(new ErrorResponse("El usuario fue eliminado", 404));
                 Product.find({ userId: id, banned: false, deleted: false }, (error: Object, product: Object) => {
                     if (error) return next(new ErrorResponse("El producto no existe", 404));
                     else {
@@ -75,11 +75,11 @@ const filtersControllers = {
             next(error)
         }
     },
-    filterByStatus: async(req: Request, res: Response, next: NextFunction) => {
+    filterByStatus: async (req: Request, res: Response, next: NextFunction) => {
         const { status } = req.query
         try {
-            if(status === 'Aprovada') {
-                Order.find({status: 'Aprovada'},(error: Object, order: Object) => {
+            if (status === 'Aprovada') {
+                Order.find({ status: 'Aprovada' }, (error: Object, order: Object) => {
                     if (error) return next(new ErrorResponse("No existen ordenes con ese status", 404));
                     else {
                         return res.json({
@@ -88,10 +88,10 @@ const filtersControllers = {
                             data: order
                         });
                     }
-                }).populate([{path: 'products.productId'},{ path: 'userId' }]);
+                }).populate([{ path: 'products.productId' }, { path: 'userId' }]);
             }
-            else if(status === 'Pendiente') {
-                Order.find({status: 'Pendiente'},(error: Object, order: Object) => {
+            else if (status === 'Pendiente') {
+                Order.find({ status: 'Pendiente' }, (error: Object, order: Object) => {
                     if (error) return next(new ErrorResponse("No existen ordenes con ese status", 404));
                     else {
                         return res.json({
@@ -100,10 +100,10 @@ const filtersControllers = {
                             data: order
                         });
                     }
-                }).populate([{path: 'products.productId'},{ path: 'userId' }]);
+                }).populate([{ path: 'products.productId' }, { path: 'userId' }]);
             }
-            else if(status === 'Rechazada') {
-                Order.find({status: 'Rechazada'},(error: Object, order: Object) => {
+            else if (status === 'Rechazada') {
+                Order.find({ status: 'Rechazada' }, (error: Object, order: Object) => {
                     if (error) return next(new ErrorResponse("No existen ordenes con ese status", 404));
                     else {
                         return res.json({
@@ -112,10 +112,10 @@ const filtersControllers = {
                             data: order
                         });
                     }
-                }).populate([{path: 'products.productId'},{ path: 'userId' }]);
+                }).populate([{ path: 'products.productId' }, { path: 'userId' }]);
             }
-            else if(status === 'En proceso') {
-                Order.find({status: 'En proceso'},(error: Object, order: Object) => {
+            else if (status === 'En proceso') {
+                Order.find({ status: 'En proceso' }, (error: Object, order: Object) => {
                     if (error) return next(new ErrorResponse("No existen ordenes con ese status", 404));
                     else {
                         return res.json({
@@ -124,7 +124,7 @@ const filtersControllers = {
                             data: order
                         });
                     }
-                }).populate([{path: 'products.productId'},{ path: 'userId' }]);
+                }).populate([{ path: 'products.productId' }, { path: 'userId' }]);
             }
             else {
                 return next(new ErrorResponse("El status no existe", 404));
