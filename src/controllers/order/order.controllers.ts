@@ -285,7 +285,11 @@ const orderControllers = {
                 data: payment
             });
         } catch (error) {
-            next(error)
+            res.json({
+                success: false,
+                msg: "El pago fue rechazado",
+                data: error
+            })
         }
     }
 }
