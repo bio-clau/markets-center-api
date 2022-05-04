@@ -205,7 +205,7 @@ const userController = {
   byId: async (req: Request, res: Response, next: NextFunction)=>{
     const {id} = req.params;
     try {
-      const user = await User.find({userId: id})
+      const user = await User.findOne({userId: id})
       if(!user) {
         return next(new ErrorResponse("No se encontro usuario", 404))
       };

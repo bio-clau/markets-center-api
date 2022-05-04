@@ -17,6 +17,7 @@ router.put('/userAdmin/:id',auth, adminController.upgradeAdmin);
 router.get('/blockPass/:id', auth, adminController.blockPass)
 router.get('/allOrders', auth, adminController.allOrders);
 router.put('/banned/:id', auth, adminController.banned);
+router.delete('/deleteUid/:id', auth, adminController.deleteUid);
 
 module.exports = router;
 

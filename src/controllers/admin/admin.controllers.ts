@@ -349,7 +349,19 @@ const adminController = {
         } catch (err) {
             next(err)
         }
-    }
+    },
+    deleteUid: async (req: Request, res: Response, next: NextFunction)=>{
+        try {
+            const { id } = req.params;
+            await firebaseAdmin.auth().deleteUser(id);
+            return res.json({
+                success: true,
+                msg: 'No tiene usuario logeado'
+            })
+        } catch (err) {
+            next(err)
+        }
+    },
 }
 
 module.exports = adminController;
