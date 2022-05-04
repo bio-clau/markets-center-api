@@ -4,7 +4,7 @@ const {auth} = require("../middlewares/auth");
 
 const { createReview, update, add, productBySeller, deleteProduct, disableProduct, enableProduct } = require("../controllers/products/product.controllers");
 const userController = require('../controllers/users/users.controllers');
-const { addOrder, sendOrder, orderSellers, updateOrder, payment } = require('../controllers/order/order.controllers')
+const { addOrder, sendOrder, orderSellers, updateOrder, payment, updateDispatches } = require('../controllers/order/order.controllers')
 const { getCart, emptyCart } = require('../controllers/cart/cart.controllers')
 const { showReviews, updateReview, deleteReview } = require('../controllers/reviews/review.controllers')
 const favsControllers = require('../controllers/favourites/favourites.controllers')
@@ -25,6 +25,7 @@ router.get('/sendOrder/:id', auth, sendOrder);
 router.get('/orderSellers/:id', auth, orderSellers);
 router.get('/productSeller/:id', productBySeller)
 router.put('/updateOrder', auth, updateOrder);
+router.put('/updateDispatches', auth, updateDispatches);
 
 
 router.post('/payment', payment)

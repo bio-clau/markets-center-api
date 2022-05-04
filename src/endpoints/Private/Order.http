@@ -2,7 +2,7 @@ POST http://localhost:4000/api/private/addOrder
 Content-Type: application/json
 
 {
-    "idUser": "kDJhV2C1H4ZwVaqjzwB8Hb2Jgnt2"
+    "idUser": "uUx3Rp3AJAaHC0WXZNRmEeCPhUW2"
 }
 
 ###
@@ -15,4 +15,13 @@ Content-Type: application/json
 {
     "idOrder": "62681023ec90d13d5f9246d2",
     "status": "Approved"
+}
+
+###
+PUT http://localhost:4000/api/private/updateDispatches
+Content-Type: application/json
+
+{
+    "idUser": "1j6PbhrcMHRPBpwRTHIgtFhQAuF2",
+    "idOrder": "6271b1056af4d7a75e7d3453"
 }

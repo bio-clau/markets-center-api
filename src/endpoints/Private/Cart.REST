@@ -4,9 +4,10 @@ Content-Type: application/json
 {
     "idUser": "uUx3Rp3AJAaHC0WXZNRmEeCPhUW2",
     "products":[
+        {"productId": "626ffe2b67dcc825f9109a91", "quantity": 1},
         {"productId": "626ffee1967c63984a9bca2b", "quantity": 1},
-        {"productId": "62701f13cdc206940ccc7514", "quantity": 1},
-        {"productId": "62701ff6cdc206940ccc752c", "quantity": 3}],
+        {"productId": "6270359591034adbd1064d37", "quantity": 1},
+        {"productId": "627048a54ab75f392ad78c31", "quantity": 1}],
     "amount": 100
 }
 
