@@ -65,6 +65,8 @@ const productController = {
         }
         try {
             const product = await Product.findById(req.params.id);
+            console.log(product);
+            
             if (product.banned) {
                 return next(new ErrorResponse("El producto se encuentra deshabilitado", 404));
             }
