@@ -61,7 +61,7 @@ STRIPE_API_KEY=stripe_api_key
 - Open the project console    
     + Inside `api` folder, run the command line, `yarn run dev` and go to `http://localhost:4000/`.
 
-## Some Example Endpoints
+## Some Examples of Public Endpoints
 [GET /products](https://backend-markets-center.herokuapp.com/api/public/products)
 <br/>
 [GET /products?name=Papas](https://backend-markets-center.herokuapp.com/api/public/products?name=Papas)
